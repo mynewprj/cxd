@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>{% block title %} CX Diagnostic {% endblock %}</title>
+  </head>
+  <body>
+    <header>
+      <table>
+        <tr>
+          <td style="width: 98%"><h1>CX Diagnostic</h1></td>
+          {% if user.is_authenticated %}
+            <td><a href="{% url 'logout' %}">logout</a></td>
+          {% endif %}
+        </tr>
+      </table>
+      <hr>
+    </header>
+    <main>
+      {% block content %}
+      {% endblock %}
+    </main>
+  </body>
+</html>
