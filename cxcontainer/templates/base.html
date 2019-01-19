@@ -2,15 +2,23 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>{% block title %} CX Diagnostic {% endblock %}</title>
+    <title>{% block title %} CX Diagnosis {% endblock %}</title>
   </head>
   <body>
     <header>
       <table>
         <tr>
-          <td style="width: 98%"><h1>CX Diagnostic</h1></td>
+          <td style="width: 85%"><h1>CX Diagnosis</h1></td>
           {% if user.is_authenticated %}
-            <td><a href="{% url 'logout' %}">logout</a></td>
+            {% if user.is_clientuser %}
+              <td style="width: 10%"><a>Client User ID : </a></td>
+            {% elif user.is_csguser %}
+              <td style="width: 10%"><a>CSG User ID : </a></td>
+            {% elif user.is_cxsuperuser %}
+              <td style="width: 10%"><a>Admin User ID : </a></td>
+            {% endif %}
+            <td style="width: 5%"><a>{{ user.username }} </a></td>
+          <td><a href="{% url 'logout' %}">logout</a></td>
           {% endif %}
         </tr>
       </table>

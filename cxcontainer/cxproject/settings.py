@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'cxdiagnosis',
     'crispy_forms',
+    'admin_auto_filters',
 
 ]
 

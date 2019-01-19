@@ -20,25 +20,33 @@ class Domain(models.Model):
     def __str__(self):
         return self.name
 
-class CapabilityArea(models.Model):
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='capabilityareas')
-    name = models.CharField(max_length=255)
-    domain = models.ForeignKey(Domain, on_delete=models.CASCADE, related_name='capabilityareas')
+class Organisation(models.Model):
+    name = models.CharField(max_length=50)
 
     def __str__(self):
         return self.name
 
-class Question(models.Model):
-    capabilityarea = models.ForeignKey(CapabilityArea, on_delete=models.CASCADE, related_name='questions')
-    text = models.CharField('Question', max_length=255)
+class CapabilityArea(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='capabilityareas')
+    name = models.CharField(max_length=255)
+    domain = models.ForeignKey(Domain, on_delete=models.CASCADE, related_name='capabilityareas')
+    organisation = models.ForeignKey(Organisation, on_delete=models.CASCADE, related_name='capabilityareas')
 
     def __str__(self):
-        return self.text
+        return self.name
+#
+# class Question(models.Model):
+#     capabilityarea = models.ForeignKey(CapabilityArea, on_delete=models.CASCADE, related_name='questions')
+#     text = models.CharField('Question', max_length=255)
+#
+#     def __str__(self):
+#         return self.text
 
 class ClientUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    capabilityareas = models.ManyToManyField(CapabilityArea, through='ResultsOfCapabilityArea')
-    domains = models.ManyToManyField(Domain, related_name='clientuser_domains')
+    # capabilityareas = models.ManyToManyField(CapabilityArea, through='ResultsOfCapabilityArea')
+    domains = models.ForeignKey(Domain, on_delete=models.SET_NULL, null=True)
+    organisations = models.ForeignKey(Organisation, on_delete=models.SET_NULL, null=True)
 
     # def get_unanswered_questions(self, quiz):
     #     answered_questions = self.quiz_answers \
@@ -50,8 +58,8 @@ class ClientUser(models.Model):
     def __str__(self):
         return self.user.username
 
-class ResultsOfCapabilityArea(models.Model):
-    clientuser = models.ForeignKey(ClientUser, on_delete=models.CASCADE, related_name='result_of_capability_areas')
-    capabilityarea = models.ForeignKey(CapabilityArea, on_delete=models.CASCADE, related_name='result_of_capability_areas')
-    score = models.FloatField()
-    date = models.DateTimeField(auto_now_add=True)
+# class ResultsOfCapabilityArea(models.Model):
+#     clientuser = models.ForeignKey(ClientUser, on_delete=models.CASCADE, related_name='result_of_capability_areas')
+#     capabilityarea = models.ForeignKey(CapabilityArea, on_delete=models.CASCADE, related_name='result_of_capability_areas')
+#     score = models.FloatField()
+#     date = models.DateTimeField(auto_now_add=True)

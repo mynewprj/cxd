@@ -1,7 +1,9 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.db import transaction
-from cxdiagnosis.models import (ClientUser, User, Domain)
+from django.forms.utils import ValidationError
+
+from cxdiagnosis.models import (ClientUser, User, Domain, Organisation)
 
 # class ClientUserSignUpForm(UserCreationForm):
 #     domain = forms.ModelChoiceField(
@@ -10,15 +12,23 @@ from cxdiagnosis.models import (ClientUser, User, Domain)
 #         # required=True
 #     )
 class ClientUserSignUpForm(UserCreationForm):
-    domains = forms.ModelMultipleChoiceField(
-        queryset=Domain.objects.all(),
-        widget=forms.CheckboxSelectMultiple,
+    domains = forms.ModelChoiceField(
+        queryset=Domain.objects.all().order_by('name'),
+        # widget=forms.Select,
         required=True
     )
+    organisations = forms.ModelChoiceField(
+        queryset=Organisation.objects.all().order_by('name'),
+        # widget=forms.Select,
+        required=True
+    )
+    username = forms.CharField(help_text=False)
+    password1 = forms.CharField(widget=forms.PasswordInput, help_text=False)
+    password2 = forms.CharField(widget=forms.PasswordInput, help_text=False)
 
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = ('username', 'password1', 'password2', 'email', 'domains')
+        fields = ('first_name', 'last_name', 'email', 'organisations', 'domains', 'username', 'password1', 'password2',)
 
     @transaction.atomic
     def save(self):
@@ -26,7 +36,9 @@ class ClientUserSignUpForm(UserCreationForm):
         user.is_clientuser = True
         user.save()
         clientuser = ClientUser.objects.create(user=user)
-        clientuser.domains.add(*self.cleaned_data.get('domains'))
+        clientuser.organisations = self.cleaned_data.get('organisations')
+        clientuser.domains = self.cleaned_data.get('domains')
+        clientuser.save()
         return user
 
 # from django import forms
