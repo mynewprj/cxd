@@ -7,6 +7,7 @@ class User(AbstractUser):
     is_clientuser = models.BooleanField(default=False)
     is_csguser = models.BooleanField(default=False)
     is_cxsuperuser = models.BooleanField(default=False)
+    change_pass = models.BooleanField(default=False)
 
 class Domain(models.Model):
     name = models.CharField(max_length=30)

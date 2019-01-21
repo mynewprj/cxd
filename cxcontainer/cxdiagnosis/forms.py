@@ -64,6 +64,7 @@ class CsgUserSignUpForm(UserCreationForm):
     def save(self):
         user = super().save(commit=False)
         user.is_csguser = True
+        user.change_pass = True
         user.save()
         csguser = CsgUser.objects.create(user=user)
         csguser.organisations = self.cleaned_data.get('organisations')
@@ -94,6 +95,7 @@ class CxSuperUserSignUpForm(UserCreationForm):
     def save(self):
         user = super().save(commit=False)
         user.is_cxsuperuser = True
+        user.change_pass = True
         user.save()
         cxsuperuser = CxSuperUser.objects.create(user=user)
         cxsuperuser.organisations = self.cleaned_data.get('organisations')

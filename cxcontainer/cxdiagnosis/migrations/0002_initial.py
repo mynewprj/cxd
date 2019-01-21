@@ -10,7 +10,8 @@ def create_user(apps, schema_editor):
                                 username='cxadmin',
                                 email='cxadmin@mail.net',
                                 password=make_password('cxadminpass'),
-                                is_cxsuperuser='1')
+                                is_cxsuperuser='1',
+                                change_pass='1')
 
 def create_domains(apps, schema_editor):
     Domain = apps.get_model('cxdiagnosis', 'Domain')

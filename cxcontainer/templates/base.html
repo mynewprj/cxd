@@ -10,23 +10,28 @@
       <table>
         <tr>
           {% if user.is_authenticated %}
-            {% if user.is_clientuser %}
-              <td style="width: 80%" align="right"></td>
-              <td style="width: 5%" align="right"><a href="{% url 'home' %}">Home</a></td>
-              <td style="width: 10%"><a>Client User ID : </a></td>
-            {% elif user.is_csguser %}
-              <td style="width: 80%" align="right"></td>
-              <td style="width: 5%" align="right"><a href="{% url 'home' %}">Home</a></td>
-              <td style="width: 10%"><a>CSG User ID : </a></td>
-            {% elif user.is_cxsuperuser %}
-              <td style="width: 60%" align="right"></td>
-              <td style="width: 5%" align="right"><a href="{% url 'home' %}">Home</a></td>
-              <td style="width: 10%" align="right"><a href="{% url 'cxsuper_signup' %}">CX Admin Signup</a></td>
-              <td style="width: 10%" align="right"><a href="{% url 'csg_signup' %}">CSG User Signup</a></td>
-              <td style="width: 10%" align="right"><a>Admin User ID : </a></td>
+            {% if not user.change_pass %}
+              {% if user.is_clientuser %}
+                <td style="width: 70%" align="right"></td>
+                <td style="width: 5%" align="right"><a href="{% url 'home' %}">Home</a></td>
+                <td style="width: 10%"><a href="{% url 'change_password' %}">change password</a></td>
+                <td style="width: 10%"><a>Client User ID : </a></td>
+              {% elif user.is_csguser %}
+                <td style="width: 70%" align="right"></td>
+                <td style="width: 5%" align="right"><a href="{% url 'home' %}">Home</a></td>
+                <td style="width: 10%"><a href="{% url 'change_password' %}">change password</a></td>
+                <td style="width: 10%"><a>CSG User ID : </a></td>
+              {% elif user.is_cxsuperuser %}
+                <td style="width: 50%" align="right"></td>
+                <td style="width: 5%" align="right"><a href="{% url 'home' %}">Home</a></td>
+                <td style="width: 10%" align="right"><a href="{% url 'cxsuper_signup' %}">CX Admin Signup</a></td>
+                <td style="width: 10%" align="right"><a href="{% url 'csg_signup' %}">CSG User Signup</a></td>
+                <td style="width: 10%"><a href="{% url 'change_password' %}">change password</a></td>
+                <td style="width: 10%" align="right"><a>Admin User ID : </a></td>
+              {% endif %}
             {% endif %}
             <td style="width: 5%" align="right"><a>{{ user.username }} </a></td>
-          <td><a href="{% url 'logout' %}">logout</a></td>
+            <td><a href="{% url 'logout' %}">logout</a></td>
           {% endif %}
         </tr>
       </table>
