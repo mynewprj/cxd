@@ -1,6 +1,16 @@
 from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
+from django.contrib.auth.hashers import make_password
+
+def create_user(apps, schema_editor):
+    User = apps.get_model('cxdiagnosis', 'User')
+    User.objects.create(first_name='Cxadmin',
+                                last_name='Cxadmin',
+                                username='cxadmin',
+                                email='cxadmin@mail.net',
+                                password=make_password('cxadminpass'),
+                                is_cxsuperuser='1')
 
 def create_domains(apps, schema_editor):
     Domain = apps.get_model('cxdiagnosis', 'Domain')
@@ -19,6 +29,10 @@ def create_organisations(apps, schema_editor):
     Organisation.objects.create(name='pqr ltd')
     Organisation.objects.create(name='demo ltd')
 
+# def create_user(apps, schema_editor):
+#     User = apps.get_model('cxdiagnosis', 'User')
+#     User.objects.create(username='cxadmin', self.set_password('cxpass'), first_name='Cxadmin', last_name='Cxadmin', email='cxadmin@mail.net', is_cxsuperuser='1', is_clientuser='0', is_csguser='0')
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -28,4 +42,5 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RunPython(create_domains),
         migrations.RunPython(create_organisations),
+        migrations.RunPython(create_user),
     ]
