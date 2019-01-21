@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.db import transaction
 from django.forms.utils import ValidationError
 
-from cxdiagnosis.models import (ClientUser, User, Domain, Organisation, CxSuperUser)
+from cxdiagnosis.models import (ClientUser, User, Domain, Organisation, CxSuperUser, CsgUser)
 
 # class ClientUserSignUpForm(UserCreationForm):
 #     domain = forms.ModelChoiceField(
@@ -41,6 +41,35 @@ class ClientUserSignUpForm(UserCreationForm):
         clientuser.save()
         return user
 
+class CsgUserSignUpForm(UserCreationForm):
+    domains = forms.ModelChoiceField(
+        queryset=Domain.objects.all().order_by('name'),
+        # widget=forms.Select,
+        required=True
+    )
+    organisations = forms.ModelChoiceField(
+        queryset=Organisation.objects.all().order_by('name'),
+        # widget=forms.Select,
+        required=True
+    )
+    username = forms.CharField(help_text=False)
+    password1 = forms.CharField(widget=forms.PasswordInput, help_text=False)
+    password2 = forms.CharField(widget=forms.PasswordInput, help_text=False)
+
+    class Meta(UserCreationForm.Meta):
+        model = User
+        fields = ('first_name', 'last_name', 'email', 'organisations', 'domains', 'username', 'password1', 'password2',)
+
+    @transaction.atomic
+    def save(self):
+        user = super().save(commit=False)
+        user.is_csguser = True
+        user.save()
+        csguser = CsgUser.objects.create(user=user)
+        csguser.organisations = self.cleaned_data.get('organisations')
+        csguser.domains = self.cleaned_data.get('domains')
+        csguser.save()
+        return user
 
 class CxSuperUserSignUpForm(UserCreationForm):
     domains = forms.ModelChoiceField(

@@ -15,9 +15,9 @@
       <tbody>
         {% for quiz in quizzes %}
           <tr>
-            <td class="align-middle">{{ capabilityarea.name }}</td>
-            <td class="align-middle">{{ capabilityarea.domain.get_html_badge }}</td>
-            <td class="align-middle">{{ capabilityarea.questions_count }} questions</td>
+            <td class="align-middle">{{ CapabilityArea.name }}</td>
+            <td class="align-middle">{{ CapabilityArea.domain.get_html_badge }}</td>
+            <td class="align-middle">{{ CapabilityArea.questions_count }} questions</td>
             <td class="text-right">
               <a href="{% url 'cxsuperuser:result_of_capability_areas' quiz.pk %}" class="btn btn-primary">Start quiz</a>
             </td>

@@ -1,0 +1,13 @@
+<h2>CX Capability Survey</h2>
+<p class="text-muted">
+  Domains:{{ user.csguser.domains }}
+  Organisation:{{ user.csguser.organisations }}
+</p>
+
+<ul class="nav nav-tabs mb-3">
+  <li class="nav-item">
+    <a class="nav-link{% if active == 'new' %} active{% endif %}" href="{% url 'csguser:csg_capability_area_list' %}">New</a>
+  </li>
+  <li class="nav-item">
+  </li>
+</ul>

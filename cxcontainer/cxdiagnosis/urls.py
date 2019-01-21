@@ -12,6 +12,10 @@ urlpatterns = [
         # path('capabilityarea/<int:pk>/', clientuser.capability_area_quiz, name='capability_area_quiz'),
     ], 'cxdiagnosis'), namespace='clientuser')),
 
+    path('csguser/', include(([
+        path('', csguser.CsgCapabilityAreaList.as_view(), name='csg_capability_area_list'),
+    ], 'cxdiagnosis'), namespace='csguser')),
+
     path('cxsuperuser/', include(([
         path('', cxsuperuser.CxSuCapabilityAreaList.as_view(), name='cx_su_capability_area_list'),
     ], 'cxdiagnosis'), namespace='cxsuperuser')),

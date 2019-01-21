@@ -16,13 +16,14 @@ Including another URLconf
 # from django.contrib import admin
 from django.urls import include, path
 # from cxdiagnosis import views
-from cxdiagnosis.views import cxdiagnosis, clientuser, cxsuperuser
+from cxdiagnosis.views import cxdiagnosis, clientuser, cxsuperuser, csguser
 
 urlpatterns = [
     path('', include('cxdiagnosis.urls')),
     path('cxaccounts/', include('django.contrib.auth.urls')),
     # path('cxaccounts/signup/', cxdiagnosis.SignUpView.as_view(), name='signup'),
     path('cxaccounts/client/signup/', clientuser.ClientUserSignUpView.as_view(), name='client_signup'),
+    path('cxaccounts/csg/signup/', csguser.CsgUserSignUpView.as_view(), name='csg_signup'),
     path('cxaccounts/cxadmin/signup/', cxsuperuser.CxSuperUserSignUpView.as_view(), name='cxsuper_signup'),
 
 ]
