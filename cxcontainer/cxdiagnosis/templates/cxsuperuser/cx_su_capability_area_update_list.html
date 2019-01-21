@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  {% include 'clientuser/_header.html' with active='new' %}
+  {% include 'cxsuperuser/_header.html' with active='new' %}
   <div class="card">
-    <a>Client user</a>
+    <a>Cx Admin user</a>
     <table class="table mb-0">
       <thead>
         <tr>
@@ -20,7 +20,7 @@
             <td class="align-middle">{{ capabilityarea.domain.get_html_badge }}</td>
             <td class="align-middle">{{ capabilityarea.questions_count }} questions</td>
             <td class="text-right">
-              <a href="{% url 'clientuser:result_of_capability_areas' quiz.pk %}" class="btn btn-primary">Start quiz</a>
+              <a href="{% url 'cxsuperuser:result_of_capability_areas' quiz.pk %}" class="btn btn-primary">Start quiz</a>
             </td>
           </tr>
         {% empty %}

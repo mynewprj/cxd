@@ -1,6 +1,6 @@
 from django.urls import include, path
 # from cxdiagnosis import views
-from cxdiagnosis.views import cxdiagnosis, clientuser, csguser, cxsupperuser
+from cxdiagnosis.views import cxdiagnosis, clientuser, csguser, cxsuperuser
 
 urlpatterns = [
     path('', cxdiagnosis.home, name='home'),
@@ -12,5 +12,8 @@ urlpatterns = [
         # path('capabilityarea/<int:pk>/', clientuser.capability_area_quiz, name='capability_area_quiz'),
     ], 'cxdiagnosis'), namespace='clientuser')),
 
+    path('cxsuperuser/', include(([
+        path('', cxsuperuser.CxSuCapabilityAreaList.as_view(), name='cx_su_capability_area_list'),
+    ], 'cxdiagnosis'), namespace='cxsuperuser')),
 
 ]
