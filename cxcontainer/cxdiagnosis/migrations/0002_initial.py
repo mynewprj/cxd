@@ -29,10 +29,6 @@ def create_organisations(apps, schema_editor):
     Organisation.objects.create(name='pqr ltd')
     Organisation.objects.create(name='demo ltd')
 
-# def create_user(apps, schema_editor):
-#     User = apps.get_model('cxdiagnosis', 'User')
-#     User.objects.create(username='cxadmin', self.set_password('cxpass'), first_name='Cxadmin', last_name='Cxadmin', email='cxadmin@mail.net', is_cxsuperuser='1', is_clientuser='0', is_csguser='0')
-
 class Migration(migrations.Migration):
 
     dependencies = [
