@@ -4,10 +4,9 @@ from cxdiagnosis.views import cxdiagnosis, clientuser, csguser, cxsuperuser
 
 urlpatterns = [
     path('', cxdiagnosis.home, name='home'),
-    path('chgpass/', cxdiagnosis.change_password, name='change_password'),
+    path('passwd/', cxdiagnosis.change_password, name='change_password'),
     path('changeit/', cxdiagnosis.check_first, name='check_first'),
-
-
+    
     path('clientuser/', include(([
         path('', clientuser.CapabilityAreaList.as_view(), name='capability_area_list'),
         # path('domains/', clientuser.ClinetsDomain.as_view(), name='clinet_domains'),

@@ -1,33 +1,37 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  {% include 'cxsuperuser/_header.html' with active='new' %}
-  <div class="card">
-    <table class="table mb-0">
-      <thead>
-        <tr>
-          <th>Capabiluty Area</th>
-          <th>Domain</th>
-          <th>Length</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for quiz in quizzes %}
+  {% if user.change_pass %}
+    <a href="{% url 'change_password' %}">Required change password</a>
+  {% else %}
+    {% include 'cxsuperuser/_header.html' with active='new' %}
+    <div class="card">
+      <table class="table mb-0">
+        <thead>
           <tr>
-            <td class="align-middle">{{ CapabilityArea.name }}</td>
-            <td class="align-middle">{{ CapabilityArea.domain.get_html_badge }}</td>
-            <td class="align-middle">{{ CapabilityArea.questions_count }} questions</td>
-            <td class="text-right">
-              <a href="{% url 'cxsuperuser:result_of_capability_areas' quiz.pk %}" class="btn btn-primary">Start quiz</a>
-            </td>
+            <th>Capabiluty Area</th>
+            <th>Domain</th>
+            <th>Length</th>
+            <th></th>
           </tr>
-        {% empty %}
-          <tr>
-            <td class="bg-light text-center font-italic" colspan="4">No capability matching your domain right now.</td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
+        </thead>
+        <tbody>
+          {% for quiz in quizzes %}
+            <tr>
+              <td class="align-middle">{{ CapabilityArea.name }}</td>
+              <td class="align-middle">{{ CapabilityArea.domain.get_html_badge }}</td>
+              <td class="align-middle">{{ CapabilityArea.questions_count }} questions</td>
+              <td class="text-right">
+                <a href="{% url 'cxsuperuser:result_of_capability_areas' quiz.pk %}" class="btn btn-primary">Start quiz</a>
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td class="bg-light text-center font-italic" colspan="4">No capability matching your domain right now.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% endif %}
 {% endblock %}
