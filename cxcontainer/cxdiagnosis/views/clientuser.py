@@ -1,13 +1,18 @@
 import time
 from django.views.generic import CreateView, ListView, UpdateView
-from ..models import ClientUser, User, CapabilityArea
-from ..forms import ClientUserSignUpForm
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
-from ..decorators import clientuser_required
 from django.contrib.auth import login
 from django.shortcuts import redirect, render
 from django.db.models import Count
+from django.contrib import messages
+from django.db import transaction
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse_lazy
+from ..models import ClientUser, User, Capability, CompletedCapability
+from ..forms import ClientUserSignUpForm, CompletedCapabilityForm
+from ..decorators import clientuser_required
+
 
 class ClientUserSignUpView(CreateView):
     model = User
@@ -22,34 +27,24 @@ class ClientUserSignUpView(CreateView):
         user = form.save()
         login(self.request, user)
         # return redirect('home')
-        return redirect('clientuser:capability_area_list')
+        return redirect('clientuser:capability_list')
 
 @method_decorator([login_required, clientuser_required], name='dispatch')
-class CapabilityAreaList(ListView):
-    model = CapabilityArea
+class CapabilityList(ListView):
+    model = Capability
     ordering = ('name', )
-    context_object_name = 'capabilityareas'
-    template_name = 'clientuser/capability_area_list.html'
+    context_object_name = 'capabilities'
+    template_name = 'clientuser/capability_list.html'
     # template_name = 'home.html'
 
     # def get_queryset(self):
     #     clientuser = self.request.user.clientuser
     #     clientuser_domains = clientuser.domains.values_list('pk', flat=True)
     #     clientuser_organisations = clientuser.organisations.values_list('pk', flat=True)
-    #     result_of_capability_areas = clientuser.capabilityareas.values_list('pk', flat=True)
-    #     queryset = CapabilityArea.objects.filter(domain__in=clientuser_domains) \
+    #     result_of_capabilities = clientuser.capabilities.values_list('pk', flat=True)
+    #     queryset = Capability.objects.filter(domain__in=clientuser_domains) \
     #         .filter(organisation__in=clientuser_organisations) \
-    #         .exclude(pk__in=result_of_capability_areas) \
+    #         .exclude(pk__in=result_of_capabilities) \
     #         .annotate(questions_count=Count('questions')) \
     #         .filter(questions_count__gt=0)
     #     return queryset
-
-# @login_required
-# @clientuser_required
-# def capability_area_quiz(request, pk):
-#     capability_area_quiz = get_object_or_404(Quiz, pk=pk)
-#     clientuser = request.user.clientuser
-#
-#     # if clientuser.capabilityareas.filter(pk=pk).exists():
-#         # return render(request, 'students/capability_area_quiz.html')
-#     return render(request, 'clientuser/capability_area_quiz.html')

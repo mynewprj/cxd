@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+  {% if user.change_pass %}
+    <a href="{% url 'change_password' %}">Required change password</a>
+  {% else %}
+    {% include 'cxsuperuser/_header.html' with active='new' %}
+    <h2 class="mb-3">Capability Areas</h2>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'cxsuperuser:cx_su_update_list_capability' %}">My CapabilityList</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'cxsuperuser:cx_su_update_capability' capability.pk %}">{{ capability.name }}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Confirm deletion</li>
+      </ol>
+    </nav>
+    <h2 class="mb-3">Confirm deletion</h2>
+    <p class="lead">Are you sure you want to delete the capability <strong>"{{ capability.name }}"</strong>? can't undo deleted capability.</p>
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger btn-lg">Yes, I'm sure</button>
+      <a href="{% url 'cxsuperuser:cx_su_update_capability' capability.pk %}" class="btn btn-outline-secondary btn-lg" role="button">Cancel</a>
+    </form>
+  {% endif %}
+{% endblock %}

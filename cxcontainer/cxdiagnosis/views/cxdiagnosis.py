@@ -18,11 +18,11 @@ def check_first(request):
 def home(request):
     if request.user.is_authenticated:
         if request.user.is_cxsuperuser:
-            return redirect('cxsuperuser:cx_su_capability_area_list')
+            return redirect('cxsuperuser:cx_su_update_list_capability')
         elif request.user.is_csguser:
-            return redirect('csguser:csg_capability_area_list')
+            return redirect('csguser:csg_capability_list')
         else:
-            return redirect('clientuser:capability_area_list')
+            return redirect('clientuser:capability_list')
     return render(request, 'home.html')
 
 def change_password(request):

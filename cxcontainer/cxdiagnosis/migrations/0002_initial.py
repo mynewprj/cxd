@@ -30,6 +30,13 @@ def create_organisations(apps, schema_editor):
     Organisation.objects.create(name='pqr ltd')
     Organisation.objects.create(name='demo ltd')
 
+def create_maturitylevel(apps, schema_editor):
+    MaturityLevel = apps.get_model('cxdiagnosis', 'MaturityLevel')
+    MaturityLevel.objects.create(name='Not Started', score='0')
+    MaturityLevel.objects.create(name='Basic', score='5')
+    MaturityLevel.objects.create(name='Medium', score='10')
+    MaturityLevel.objects.create(name='Pro', score='15')
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -40,4 +47,5 @@ class Migration(migrations.Migration):
         migrations.RunPython(create_domains),
         migrations.RunPython(create_organisations),
         migrations.RunPython(create_user),
+        migrations.RunPython(create_maturitylevel),
     ]

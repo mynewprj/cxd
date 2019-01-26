@@ -11,7 +11,6 @@ class User(AbstractUser):
 
 class Domain(models.Model):
     name = models.CharField(max_length=30)
-    # color = models.CharField(max_length=7, default='#007bff')
 
     def get_html_badge(self):
         name = escape(self.name)
@@ -27,21 +26,36 @@ class Organisation(models.Model):
     def __str__(self):
         return self.name
 
-class CapabilityArea(models.Model):
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='capabilityareas')
+class Capability(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='capabilities')
     name = models.CharField(max_length=255)
-    domain = models.ForeignKey(Domain, on_delete=models.CASCADE, related_name='capabilityareas')
-    organisation = models.ForeignKey(Organisation, on_delete=models.CASCADE, related_name='capabilityareas')
 
     def __str__(self):
         return self.name
-#
-# class Question(models.Model):
-#     capabilityarea = models.ForeignKey(CapabilityArea, on_delete=models.CASCADE, related_name='questions')
-#     text = models.CharField('Question', max_length=255)
-#
-#     def __str__(self):
-#         return self.text
+
+class Question(models.Model):
+    capability = models.ForeignKey(Capability, on_delete=models.CASCADE, related_name='questions')
+    text = models.CharField('Question', max_length=255)
+    weightage = models.FloatField()
+
+    def __str__(self):
+        return self.text
+
+class MaturityLevel(models.Model):
+    name = models.CharField('MaturityLevel', max_length=10)
+    score = models.FloatField()
+
+    def __str__(self):
+        return self.name
+
+class Answer(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='answers')
+    maturitylevel = models.ForeignKey(MaturityLevel, on_delete=models.CASCADE, related_name='maturitylevels')
+    text = models.CharField('Answer', max_length=255)
+    # is_correct = models.BooleanField('Correct answer', default=False)
+
+    def __str__(self):
+        return self.text
 
 class ClientUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
@@ -60,7 +74,7 @@ class ClientUser(models.Model):
 
 class CsgUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    # capabilityareas = models.ManyToManyField(CapabilityArea, through='ResultsOfCapabilityArea')
+    # capabilities = models.ManyToManyField(Capability, through='ResultsOfCapability')
     domains = models.ForeignKey(Domain, on_delete=models.SET_NULL, null=True)
     organisations = models.ForeignKey(Organisation, on_delete=models.SET_NULL, null=True)
 
@@ -75,8 +89,13 @@ class CxSuperUser(models.Model):
     def __str__(self):
         return self.user.username
 
-# class ResultsOfCapabilityArea(models.Model):
-#     clientuser = models.ForeignKey(ClientUser, on_delete=models.CASCADE, related_name='result_of_capability_areas')
-#     capabilityarea = models.ForeignKey(CapabilityArea, on_delete=models.CASCADE, related_name='result_of_capability_areas')
-#     score = models.FloatField()
-#     date = models.DateTimeField(auto_now_add=True)
+class CompletedCapability(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='cx_su_completed_capability')
+    capability = models.ForeignKey(Capability, on_delete=models.CASCADE, related_name='cx_su_completed_capability')
+    score = models.FloatField()
+    date = models.DateTimeField(auto_now_add=True)
+
+
+class UserAnswer(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='capability_answers')
+    answer = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name='+')

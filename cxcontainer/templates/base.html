@@ -1,45 +1,90 @@
-<!DOCTYPE html>
+{% load static %}<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>{% block title %} CX Diagnosis {% endblock %}</title>
+    <link rel="icon" href="{% static 'img/cxicon.png' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/cxdiagnosis.css' %}">
+    {% if user.is_authenticated %}
+      {% if user.is_clientuser %}
+        <link rel="stylesheet" type="text/css" href="{% static 'css/clientuser.css' %}">
+      {% elif user.is_csguser %}
+        <link rel="stylesheet" type="text/css" href="{% static 'css/csguser.css' %}">
+      {% elif user.is_cxsuperuser %}
+        <link rel="stylesheet" type="text/css" href="{% static 'css/cxsuperuser.css' %}">
+      {% endif %}
+    {% endif %}
   </head>
   <body>
-    <header>
-      <h1>CX Diagnosis</h1>
-      <table>
-        <tr>
-          {% if user.is_authenticated %}
-            {% if not user.change_pass %}
-              {% if user.is_clientuser %}
-                <td style="width: 70%" align="right"></td>
-                <td style="width: 5%" align="right"><a href="{% url 'home' %}">Home</a></td>
-                <td style="width: 10%"><a href="{% url 'change_password' %}">change password</a></td>
-                <td style="width: 10%"><a>Client User ID : </a></td>
-              {% elif user.is_csguser %}
-                <td style="width: 70%" align="right"></td>
-                <td style="width: 5%" align="right"><a href="{% url 'home' %}">Home</a></td>
-                <td style="width: 10%"><a href="{% url 'change_password' %}">change password</a></td>
-                <td style="width: 10%"><a>CSG User ID : </a></td>
-              {% elif user.is_cxsuperuser %}
-                <td style="width: 50%" align="right"></td>
-                <td style="width: 5%" align="right"><a href="{% url 'home' %}">Home</a></td>
-                <td style="width: 10%" align="right"><a href="{% url 'cxsuper_signup' %}">CX Admin Signup</a></td>
-                <td style="width: 10%" align="right"><a href="{% url 'csg_signup' %}">CSG User Signup</a></td>
-                <td style="width: 10%"><a href="{% url 'change_password' %}">change password</a></td>
-                <td style="width: 10%" align="right"><a>Admin User ID : </a></td>
-              {% endif %}
-            {% endif %}
-            <td style="width: 5%" align="right"><a>{{ user.username }} </a></td>
-            <td><a href="{% url 'logout' %}">logout</a></td>
-          {% endif %}
-        </tr>
-      </table>
-      <hr>
-    </header>
-    <main>
-      {% block content %}
-      {% endblock %}
-    </main>
+    <div class="container my-5">
+      <div class="row justify-content-center">
+        <div class="col-xs-5 col-sm-7 col-md-10 col-lg-12">
+          <div class="row">
+            <div class="col-xs-4 col-sm-6 col-md-9 col-lg-11">
+              <a href="{% url 'home' %}">
+                <span><img src="{% static "img/cxicon.ico" %}" alt="Cx Diagnosis"><b>iagnosis</b></span>
+                {% if user.is_authenticated %}
+                  <div class="text-right">
+                  {% if not user.change_pass %}
+                    <a href="{% url 'change_password' %}"><span class="btn btn-primary">change password</span></a>
+                    {% if user.is_cxsuperuser %}
+                      <div class="btn-group">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                           Admin Activity
+                        </button>
+                        <div class="dropdown-menu">
+                          <a class="dropdown-item" href="{% url 'cxsuper_signup' %}">Create an Admin user</a>
+                          <a class="dropdown-item" href="{% url 'csg_signup' %}">Create a CSG user</a>
+                        </div>
+                      </div>
+                    {% endif %}
+                  {% endif %}
+                  Logged in as <strong>{{ user.username }}</strong>. <a href="{% url 'logout' %}">Log out</a>.
+                </div>
+                {% endif %}
+              </a>
+              <div class="card mb-3">
+                <div class="card-body">
+                  {% for message in messages %}
+                    <div class="alert {{ message.tags }} alert-dismissible fade show" role="alert">
+                      {{ message }}
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                  {% endfor %}
+                  {% block content %}
+                  {% endblock %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+      })
+    </script>
+    <script>
+      window.onscroll = function() {
+        growShrinkLogo()
+      };
+
+      function growShrinkLogo() {
+        var Logo = document.getElementById("Logo")
+        if (document.body.scrollTop > 5 || document.documentElement.scrollTop > 5) {
+          Logo.style.width = '30px';
+        } else {
+          Logo.style.width = '60px';
+        }
+      }
+    </script>
   </body>
 </html>

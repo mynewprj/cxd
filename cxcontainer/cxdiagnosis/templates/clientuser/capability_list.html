@@ -4,8 +4,9 @@
   {% if user.change_pass %}
     <a href="{% url 'change_password' %}">Required change password</a>
   {% else %}
-    {% include 'cxsuperuser/_header.html' with active='new' %}
+    {% include 'clientuser/_header.html' with active='new' %}
     <div class="card">
+      <a>Client user</a>
       <table class="table mb-0">
         <thead>
           <tr>
@@ -18,11 +19,11 @@
         <tbody>
           {% for quiz in quizzes %}
             <tr>
-              <td class="align-middle">{{ CapabilityArea.name }}</td>
-              <td class="align-middle">{{ CapabilityArea.domain.get_html_badge }}</td>
-              <td class="align-middle">{{ CapabilityArea.questions_count }} questions</td>
+              <td class="align-middle">{{ capability.name }}</td>
+              <td class="align-middle">{{ capability.domain.get_html_badge }}</td>
+              <td class="align-middle">{{ capability.questions_count }} questions</td>
               <td class="text-right">
-                <a href="{% url 'cxsuperuser:result_of_capability_areas' quiz.pk %}" class="btn btn-primary">Start quiz</a>
+                <a href="{% url 'clientuser:result_of_capabilities' capability.pk %}" class="btn btn-primary">Start capability survey</a>
               </td>
             </tr>
           {% empty %}

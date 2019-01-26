@@ -1,13 +1,4 @@
-<h2>CX Capability Survey</h2>
-<p class="text-muted">
-  Domains:{{ user.cxsuperuser.domains }}
-  Organisation:{{ user.cxsuperuser.organisations }}
+<p class="text-info">
+  <strong>Domains: </strong><span class="badge badge-pill badge-dark"> {{ user.cxsuperuser.domains }}</span>
+  <strong>Organisation: </strong><span class="badge badge-pill badge-secondary"> {{ user.cxsuperuser.organisations }}</span>
 </p>
-
-<ul class="nav nav-tabs mb-3">
-  <li class="nav-item">
-    <a class="nav-link{% if active == 'new' %} active{% endif %}" href="{% url 'cxsuperuser:cx_su_capability_area_list' %}">New</a>
-  </li>
-  <li class="nav-item">
-  </li>
-</ul>

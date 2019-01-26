@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+  {% if user.change_pass %}
+    <a href="{% url 'change_password' %}">Required change password</a>
+  {% else %}
+    {% include 'cxsuperuser/_header.html' with active='new' %}
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'cxsuperuser:cx_su_update_list_capability' %}">My Capabilities</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'cxsuperuser:cx_su_update_capability' capability.pk %}">{{ capability.name }}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Add a new question</li>
+      </ol>
+    </nav>
+    <h2 class="mb-3">Add a new question</h2>
+    <p class="lead">Add first the text of the question. In the next step you will be able to add the possible answers.</p>
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {{ form|crispy }}
+      <button type="submit" class="btn btn-success">Save changes</button>
+      <a href="{% url 'cxsuperuser:cx_su_update_capability' capability.pk %}" class="btn btn-outline-secondary" role="button">Cancel</a>
+    </form>
+  {% endif %}
+{% endblock %}

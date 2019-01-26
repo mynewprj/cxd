@@ -4,9 +4,9 @@
   {% if user.change_pass %}
     <a href="{% url 'change_password' %}">Required change password</a>
   {% else %}
-    {% include 'clientuser/_header.html' with active='new' %}
+    {% include 'csguser/_header.html' with active='new' %}
     <div class="card">
-      <a>Client user</a>
+      <a>CSG user</a>
       <table class="table mb-0">
         <thead>
           <tr>
@@ -19,11 +19,11 @@
         <tbody>
           {% for quiz in quizzes %}
             <tr>
-              <td class="align-middle">{{ capabilityarea.name }}</td>
-              <td class="align-middle">{{ capabilityarea.domain.get_html_badge }}</td>
-              <td class="align-middle">{{ capabilityarea.questions_count }} questions</td>
+              <td class="align-middle">{{ Capability.name }}</td>
+              <td class="align-middle">{{ Capability.domain.get_html_badge }}</td>
+              <td class="align-middle">{{ Capability.questions_count }} questions</td>
               <td class="text-right">
-                <a href="{% url 'clientuser:result_of_capability_areas' quiz.pk %}" class="btn btn-primary">Start quiz</a>
+                <a href="{% url 'csguser:result_of_capabilities' quiz.pk %}" class="btn btn-primary">Start quiz</a>
               </td>
             </tr>
           {% empty %}
