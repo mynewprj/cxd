@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
     <title>{% block title %} CX Diagnosis {% endblock %}</title>
     <link rel="icon" href="{% static 'img/cxicon.png' %}">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -25,26 +25,35 @@
             <div class="col-xs-4 col-sm-6 col-md-9 col-lg-11">
               <a href="{% url 'home' %}">
                 <span><img src="{% static "img/cxicon.ico" %}" alt="Cx Diagnosis"><b>iagnosis</b></span>
-                {% if user.is_authenticated %}
-                  <div class="text-right">
-                  {% if not user.change_pass %}
-                    <a href="{% url 'change_password' %}"><span class="btn btn-primary">change password</span></a>
-                    {% if user.is_cxsuperuser %}
-                      <div class="btn-group">
-                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                           Admin Activity
-                        </button>
-                        <div class="dropdown-menu">
-                          <a class="dropdown-item" href="{% url 'cxsuper_signup' %}">Create an Admin user</a>
-                          <a class="dropdown-item" href="{% url 'csg_signup' %}">Create a CSG user</a>
-                        </div>
-                      </div>
-                    {% endif %}
-                  {% endif %}
-                  Logged in as <strong>{{ user.username }}</strong>. <a href="{% url 'logout' %}">Log out</a>.
-                </div>
-                {% endif %}
               </a>
+              {% if user.is_authenticated %}
+                <div class="text-right col-xs-4 col-sm-6 col-md-9 col-lg-11">
+                {% if not user.change_pass %}
+                  {% if not user.is_cxsuperuser %}
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                      Tools
+                    </button>
+                    <div class="dropdown-menu">
+                      <a class="dropdown-item" href="{% url 'change_password' %}">change password</a>
+                    </div>
+                  </div>
+                {% elif user.is_cxsuperuser %}
+                    <div class="btn-group">
+                      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                        Tools
+                      </button>
+                      <div class="dropdown-menu">
+                        <a class="dropdown-item" href="{% url 'cxsuper_signup' %}">Create an Admin user</a>
+                        <a class="dropdown-item" href="{% url 'csg_signup' %}">Create a CSG user</a>
+                        <a class="dropdown-item" href="{% url 'change_password' %}">change password</a>
+                      </div>
+                    </div>
+                  {% endif %}
+                {% endif %}
+                Logged in as <strong>{{ user.username }}</strong>. <a href="{% url 'logout' %}">Log out</a>.
+              </div>
+              {% endif %}
               <div class="card mb-3">
                 <div class="card-body">
                   {% for message in messages %}

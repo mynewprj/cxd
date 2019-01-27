@@ -15,7 +15,7 @@
       </ol>
     </nav>
     <h2 class="mb-3">{{ question.txt }}</h2>
-    <form method="post">
+    <form method="post" novalidate>
       {% csrf_token %}
       {{ formset.management_form }}
       {{ form|crispy }}
@@ -43,7 +43,6 @@
                 <div class="col-8">
                   {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
                   {{ form.text|as_crispy_field }}
-                  {% if form.instance.pk and form.text.value != form.instance.text %}<p class="mb-0 mt-1"><small class="text-muted font-italic"><strong>Old answer:</strong> {{ form.instance.text }}</small></p>{% endif %}
                 </div>
                 <div class="col-2">
                   {{ form.maturitylevel }}
@@ -59,7 +58,7 @@
         </div>
       </div>
       <p>
-        <small class="form-text text-muted">Your question may have at least <strong>2</strong> answers and maximum <strong>10</strong> answers. Select at least one correct answer.</small>
+        <small class="form-text text-muted">Maturity level need to be unique </small>
       </p>
       <button type="submit" class="btn btn-success">Save changes</button>
       <a href="{% url 'cxsuperuser:cx_su_update_capability' capability.pk %}">{{ capability.name }}</a>
