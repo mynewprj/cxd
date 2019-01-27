@@ -143,7 +143,15 @@ class BaseAnswerInlineFormSet(forms.BaseInlineFormSet):
             required=True
         )
 
-        
+        # has_one_correct_answer = False
+        # for form in self.forms:
+        #     if not form.cleaned_data.get('DELETE', False):
+        #         if form.cleaned_data.get('maturitylevel', False):
+        #             # has_one_correct_answer = True
+        #             break
+        # if not has_one_correct_answer:
+        #     raise ValidationError('Maturity level need to be unique across answers', code='no_correct_answer')
+
 class CompletedCapabilityForm(forms.ModelForm):
     answer = forms.ModelChoiceField(
         queryset=Answer.objects.none(),
