@@ -176,7 +176,7 @@ def question_change(request, capability_pk, question_pk):
             messages.success(request, 'Question and answers saved with success!')
             return redirect('cxsuperuser:cx_su_update_capability', capability.pk)
     else:
-        form = QuestionForm()
+        form = QuestionForm(instance=question)
         formset = AnswerFormSet(instance=question)
 
     return render(request, 'cxsuperuser/question_change_form.html', {

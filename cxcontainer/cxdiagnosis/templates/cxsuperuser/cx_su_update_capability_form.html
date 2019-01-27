@@ -31,8 +31,11 @@
     <div class="card">
       <div class="card-header">
         <div class="row">
-          <div class="col-10">
+          <div class="col-8">
             <strong>Questions</strong>
+          </div>
+          <div class="col-2">
+            <strong>Weightage</strong>
           </div>
           <div class="col-2">
             <strong>Answers</strong>
@@ -43,8 +46,11 @@
         {% for question in questions %}
         <div class="list-group-item">
           <div class="row">
-            <div class="col-10">
+            <div class="col-8">
               <a href="{% url 'cxsuperuser:question_change' capability.pk question.pk %}">{{ question.text }}</a>
+            </div>
+            <div class="col-2">
+              {{ question.weightage }}
             </div>
             <div class="col-2">
               {{ question.answers_count }}
