@@ -35,7 +35,7 @@ class Capability(models.Model):
 
 class Question(models.Model):
     capability = models.ForeignKey(Capability, on_delete=models.CASCADE, related_name='questions')
-    text = models.CharField('Question', max_length=255)
+    text = models.CharField('Question', max_length=300)
     weightage = models.FloatField()
 
     def __str__(self):
@@ -51,7 +51,7 @@ class MaturityLevel(models.Model):
 class Answer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='answers')
     maturitylevel = models.ForeignKey(MaturityLevel, on_delete=models.CASCADE, related_name='maturitylevels')
-    text = models.CharField('Answer', max_length=255)
+    text = models.CharField('Answer', max_length=600)
     # is_correct = models.BooleanField('Correct answer', default=False)
 
     def __str__(self):
@@ -59,15 +59,16 @@ class Answer(models.Model):
 
 class ClientUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    domains = models.ForeignKey(Domain, on_delete=models.SET_NULL, null=True)
+    capabilities = models.ManyToManyField(Capability, through='CompletedCapability')
+    domains = models.ForeignKey(Domain, on_delete=models.SET_NULL, null=True, related_name='domains_clientusers')
     organisations = models.ForeignKey(Organisation, on_delete=models.SET_NULL, null=True)
 
-    # def get_unanswered_questions(self, quiz):
-    #     answered_questions = self.quiz_answers \
-    #         .filter(answer__question__quiz=quiz) \
-    #         .values_list('answer__question__pk', flat=True)
-    #     questions = quiz.questions.exclude(pk__in=answered_questions).order_by('text')
-    #     return questions
+    def get_unanswered_questions(self, capability):
+        answered_questions = self.capability_answers \
+            .filter(answer__question__capability=capability) \
+            .values_list('answer__question__pk', flat=True)
+        questions = capability.questions.exclude(pk__in=answered_questions).order_by('text')
+        return questions
 
     def __str__(self):
         return self.user.username
@@ -90,12 +91,13 @@ class CxSuperUser(models.Model):
         return self.user.username
 
 class CompletedCapability(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='cx_su_completed_capability')
-    capability = models.ForeignKey(Capability, on_delete=models.CASCADE, related_name='cx_su_completed_capability')
+    clientuser = models.ForeignKey(ClientUser, on_delete=models.CASCADE, related_name='completed_capabilities')
+    capability = models.ForeignKey(Capability, on_delete=models.CASCADE, related_name='completed_capabilities')
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='completed_capabilities')
     score = models.FloatField()
     date = models.DateTimeField(auto_now_add=True)
 
 
-class UserAnswer(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='capability_answers')
+class ClientUserAnswer(models.Model):
+    clientuser = models.ForeignKey(ClientUser, on_delete=models.CASCADE, related_name='capability_answers')
     answer = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name='+')

@@ -8,10 +8,10 @@ urlpatterns = [
     path('changeit/', cxdiagnosis.check_first, name='check_first'),
 
     path('clientuser/', include(([
-        path('', clientuser.CapabilityList.as_view(), name='capability_list'),
-        # path('domains/', clientuser.ClinetsDomain.as_view(), name='clinet_domains'),
-        # path('result/', clientuser.ResultsOfCapability.as_view(), name='result_of_capability_list'),
-        # path('capability/<int:pk>/', clientuser.capability, name='capability'),
+        path('', clientuser.CapabilityListView.as_view(), name='capability_list'),
+        path('domains/', clientuser.ClientUserDomainView.as_view(), name='clientuser_domains'),
+        path('completed/', clientuser.CompletedCapabilitylistView.as_view(), name='completed_capability_list'),
+        path('capability/<int:pk>/', clientuser.completed_capability, name='completed_capability'),
     ], 'cxdiagnosis'), namespace='clientuser')),
 
     path('csguser/', include(([

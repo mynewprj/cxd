@@ -32,13 +32,13 @@
       <div class="card-header">
         <div class="row">
           <div class="col-8">
-            <strong>Questions</strong>
+            <strong>Capabilities</strong>
           </div>
           <div class="col-2">
             <strong>Weightage</strong>
           </div>
           <div class="col-2">
-            <strong>Answers</strong>
+            <strong>No of maturity level</strong>
           </div>
         </div>
       </div>
@@ -59,12 +59,12 @@
         </div>
         {% empty %}
         <div class="list-group-item text-center">
-          <p class="text-muted font-italic mb-0">You haven't created any questions yet. Go ahead and <a href="{% url 'cxsuperuser:question_add' capability.pk %}">add the first question</a>.</p>
+          <p class="text-muted font-italic mb-0">You haven't created any capabilities yet. Go ahead and <a href="{% url 'cxsuperuser:question_add' capability.pk %}">add the first question</a>.</p>
         </div>
         {% endfor %}
       </div>
       <div class="card-footer">
-        <a href="{% url 'cxsuperuser:question_add' capability.pk %}" class="btn btn-primary btn-sm">Add question</a>
+        <a href="{% url 'cxsuperuser:question_add' capability.pk %}" class="btn btn-primary btn-sm">Add capability</a>
       </div>
     </div>
   {% endif %}

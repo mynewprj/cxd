@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags humanize %}
+
+{% block content %}
+  {% if user.change_pass %}
+    <a href="{% url 'change_password' %}">Required change password</a>
+  {% else %}
+    {% include 'clientuser/_header.html' with active='completed' %}
+    <div class="card">
+      <table class="table mb-0">
+        <thead>
+          <tr>
+            <th>Capability Area</th>
+            <th>Capability</th>
+            <th>Date</th>
+            <th>Maturity Level</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for completed_capability in completed_capabilities %}
+            <tr>
+              <td>{{ completed_capability.capability.name }}</td>
+              <td>{{ completed_capability.question.text }}</td>
+              <td>{{ completed_capability.date|naturaltime }}</td>
+              <td>{{ completed_capability.score }}</td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td class="bg-light text-center font-italic" colspan="3">You haven't completed any capability yet.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% endif %}
+{% endblock %}

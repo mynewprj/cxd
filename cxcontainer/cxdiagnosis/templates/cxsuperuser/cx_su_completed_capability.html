@@ -1,54 +1,49 @@
 {% extends 'base.html' %}
 
+{% load crispy_forms_tags humanize %}
+
 {% block content %}
   {% if user.change_pass %}
     <a href="{% url 'change_password' %}">Required change password</a>
   {% else %}
     {% include 'cxsuperuser/_header.html' %}
-    <h2 class="mb-3">Capabilities</h2>
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{% url 'cxsuperuser:cx_su_update_capability' %}">My Capability</a></li>
-        <li class="breadcrumb-item active" aria-current="page">{{ capability.name }}</li>
-      </ol>  
+        <li class="breadcrumb-item"><a href="{% url 'cxsuperuser:cx_su_update_list_capability' %}">My capabilities</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'cxsuperuser:cx_su_update_capability' capability.pk %}">{{ capability.name }}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Results</li>
+      </ol>
     </nav>
-    <h2 class="mb-3">
-      {{ capability.name }}
-      <a href="{% url 'cxsuperuser:cx_su_completed_capability' capability.pk %}" class="btn btn-primary float-right">Show compelted</a>
-    </h2>
-    <form method="post" novalidate>
-      {% csrf_token %}
-      {{ form|crispy }}
-      <button type="submit" class="btn btn-success">Save changes</button>
-      <a href="{% url 'cxsuperuser:cx_su_update_list_capability' %}" class="btn btn-outline-secondary" role="button">Cancel</a>
-      <a href="{% url 'cxsuperuser:cx_su_delete_capability' capability.pk %}" class="btn btn-danger float-right">Delete</a>
-    </form>
+    <h2 class="mb-3">{{ capability.name }} Results</h2>
 
-
+    <div class="card">
+      <div class="card-header">
+        <strong>Completed Capabilities</strong>
+        <span class="badge badge-pill badge-primary float-right">Average Score: {{ Capability_score.average_score|default_if_none:0.0 }}</span>
+      </div>
       <table class="table mb-0">
         <thead>
           <tr>
-            <th>Capabiluty Area</th>
-            <th>Length</th>
-            <th></th>
+            <th>Client User</th>
+            <th>Domains</th>
+            <th>Date</th>
+            <th>Score</th>
           </tr>
         </thead>
         <tbody>
-          {% for capability in capabilities %}
+          {% for completed_capability in completed_capabilities %}
             <tr>
-              <td class="align-middle">{{ capability.name }}</td>
-              <td class="align-middle">{{ capability.questions_count }} questions</td>
-              <td class="text-right">
-                <a href="{% url 'cxsuperuser:cx_su_completed_capability' capability.pk %}" class="btn btn-primary">Start capability</a>
-              </td>
-            </tr>
-          {% empty %}
-            <tr>
-              <td class="bg-light text-center font-italic" colspan="4">No capability matching for you right now.</td>
+              <td>{{ completed_capability.clientuser.user.username }}</td>
+              <td>{{ completed_capability.clientuser.domains }}</td>
+              <td>{{ completed_capability.date|naturaltime }}</td>
+              <td>{{ completed_capability.score }}</td>
             </tr>
           {% endfor %}
         </tbody>
       </table>
+      <div class="card-footer text-muted">
+        Total respondents: <strong>{{ total_completed_capabilities }}</strong>
+      </div>
     </div>
   {% endif %}
 {% endblock %}

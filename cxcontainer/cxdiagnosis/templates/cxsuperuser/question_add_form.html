@@ -11,10 +11,10 @@
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{% url 'cxsuperuser:cx_su_update_list_capability' %}">My Capabilities</a></li>
         <li class="breadcrumb-item"><a href="{% url 'cxsuperuser:cx_su_update_capability' capability.pk %}">{{ capability.name }}</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Add a new question</li>
+        <li class="breadcrumb-item active" aria-current="page">Add a new capability</li>
       </ol>
     </nav>
-    <h2 class="mb-3">Add a new question</h2>
+    <h2 class="mb-3">Add a new capability</h2>
     <p class="lead">Add first the text of the question. In the next step you will be able to add the possible answers.</p>
     <form method="post" novalidate>
       {% csrf_token %}

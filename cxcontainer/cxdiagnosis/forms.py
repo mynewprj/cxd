@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.db import transaction
 from django.forms.utils import ValidationError
 
-from cxdiagnosis.models import (ClientUser, User, Domain, Organisation, CxSuperUser, CsgUser, Question, Answer, MaturityLevel, UserAnswer)
+from cxdiagnosis.models import (ClientUser, User, Domain, Organisation, CxSuperUser, CsgUser, Question, Answer, MaturityLevel, ClientUserAnswer)
 # from django.db.models import Q
 
 # class ClientUserSignUpForm(UserCreationForm):
@@ -104,6 +104,11 @@ class CxSuperUserSignUpForm(UserCreationForm):
         cxsuperuser.save()
         return user
 
+class ClientUserDomainForm(forms.ModelForm):
+    class Meta:
+        model = ClientUser
+        fields = ('domains', )
+
 class QuestionForm(forms.ModelForm):
     weightage = forms.FloatField(required=True)
 
@@ -160,7 +165,7 @@ class CompletedCapabilityForm(forms.ModelForm):
         empty_label=None)
 
     class Meta:
-        model = UserAnswer
+        model = ClientUserAnswer
         fields = ('answer', )
 
     def __init__(self, *args, **kwargs):

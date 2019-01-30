@@ -17,8 +17,8 @@
         <thead>
           <tr>
             <th>Capabiluty Area</th>
-            <th>Questions</th>
-            <th>Completed</th>
+            <th>No of capabilities</th>
+            <th>No of users completed</th>
             <th></th>
           </tr>
         </thead>
@@ -26,7 +26,7 @@
           {% for capability in capabilities %}
             <tr>
               <td class="align-middle"><a href="{% url 'cxsuperuser:cx_su_update_capability' capability.pk %}">{{ capability.name }}</td>
-              <td class="align-middle">{{ capability.questions_count }} questions</td>
+              <td class="align-middle">{{ capability.questions_count }} Capabilityies</td>
               <td class="align-middle">{{ capability.completed_count }}</td>
               <td class="text-right">
                 <a href="{% url 'cxsuperuser:cx_su_completed_capability' capability.pk %}" class="btn btn-primary">Show results</a>

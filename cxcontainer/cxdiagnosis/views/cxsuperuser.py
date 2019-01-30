@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from ..decorators import clientuser_required, cxsuperuser_required
 from django.contrib.auth import login
 from django.shortcuts import redirect, render, get_object_or_404
-from django.db.models import Count
+from django.db.models import Count, Avg
 from django.contrib import messages
 from django.urls import reverse, reverse_lazy
 from django import forms
@@ -42,7 +42,7 @@ class CxSuCapabilityList(ListView):
     def get_queryset(self):
         queryset = self.request.user.capabilities \
             .annotate(questions_count=Count('questions', distinct=True)) \
-            .annotate(completed_count=Count('cx_su_completed_capability', distinct=True))
+            .annotate(completed_count=Count('completed_capabilities', distinct=True))
         return queryset
 
 @method_decorator([login_required, cxsuperuser_required], name='dispatch')
@@ -88,12 +88,12 @@ class CompletedCapabilityView(DetailView):
 
     def get_context_data(self, **kwargs):
         capability = self.get_object()
-        cx_su_completed_capability = capability.cx_su_completed_capability.select_related('clientuser__user').order_by('-date')
-        total_completed_capability = cx_su_completed_capability.count()
-        capability_score = capability.cx_su_completed_capability.aggregate(average_score=Avg('score'))
+        completed_capabilities = capability.completed_capabilities.select_related('clientuser__user').order_by('-date')
+        total_completed_capabilities = completed_capabilities.count()
+        capability_score = capability.completed_capabilities.aggregate(average_score=Avg('score'))
         extra_context = {
-            'cx_su_completed_capability': cx_su_completed_capability,
-            'total_completed_capability': total_completed_capability,
+            'completed_capabilities': completed_capabilities,
+            'total_completed_capabilities': total_completed_capabilities,
             'capability_score': capability_score
         }
         kwargs.update(extra_context)

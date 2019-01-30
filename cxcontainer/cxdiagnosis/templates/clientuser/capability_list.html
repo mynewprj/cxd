@@ -6,24 +6,21 @@
   {% else %}
     {% include 'clientuser/_header.html' with active='new' %}
     <div class="card">
-      <a>Client user</a>
       <table class="table mb-0">
         <thead>
           <tr>
-            <th>Capabiluty Area</th>
-            <th>Domain</th>
+            <th>Capability Area</th>
             <th>Length</th>
             <th></th>
           </tr>
         </thead>
         <tbody>
-          {% for quiz in quizzes %}
+          {% for capability in capabilities %}
             <tr>
               <td class="align-middle">{{ capability.name }}</td>
-              <td class="align-middle">{{ capability.domain.get_html_badge }}</td>
               <td class="align-middle">{{ capability.questions_count }} questions</td>
               <td class="text-right">
-                <a href="{% url 'clientuser:result_of_capabilities' capability.pk %}" class="btn btn-primary">Start capability survey</a>
+                <a href="{% url 'clientuser:completed_capability' capability.pk %}" class="btn btn-primary">Start now</a>
               </td>
             </tr>
           {% empty %}
