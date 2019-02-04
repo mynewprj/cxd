@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from ..decorators import clientuser_required, cxsuperuser_required
 from django.contrib.auth import login
 from django.shortcuts import redirect, render, get_object_or_404
-from django.db.models import Count, Avg
+from django.db.models import Count, Avg, Sum
 from django.contrib import messages
 from django.urls import reverse, reverse_lazy
 from django import forms

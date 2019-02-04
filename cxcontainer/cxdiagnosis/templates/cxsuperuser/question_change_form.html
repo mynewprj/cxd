@@ -22,14 +22,11 @@
       <div class="card mb-3{% if formset.errors %} border-danger{% endif %}">
         <div class="card-header">
           <div class="row">
-            <div class="col-8"
+            <div class="col-10"
               <strong>Capabilities</strong>
             </div>
             <div class="col-2">
               <strong>Maturity Level</strong>
-            </div>
-            <div class="col-2">
-              <strong>Delete?</strong>
             </div>
           </div>
         </div>
@@ -40,17 +37,12 @@
           {% for form in formset %}
             <div class="list-group-item">
               <div class="row">
-                <div class="col-8">
+                <div class="col-10">
                   {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
                   {{ form.text|as_crispy_field }}
                 </div>
                 <div class="col-2">
                   {{ form.maturitylevel }}
-                </div>
-                <div class="col-2">
-                  {% if form.instance.pk %}
-                    {{ form.DELETE }}
-                  {% endif %}
                 </div>
               </div>
             </div>
@@ -62,7 +54,6 @@
       </p>
       <button type="submit" class="btn btn-success">Save changes</button>
       <a href="{% url 'cxsuperuser:cx_su_update_capability' capability.pk %}">{{ capability.name }}</a>
-      <a href="{% url 'cxsuperuser:question_delete' capability.pk question.pk %}" class="btn btn-danger float-right">Delete</a>
     </form>
   {% endif %}
 {% endblock %}

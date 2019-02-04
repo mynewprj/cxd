@@ -107,9 +107,9 @@ def completed_capability(request, pk):
                 # question_weightage = Question.objects.get(capability=pk).weightage
                 score = round((maturitylevel_score * question_weightage) / 100.0, 2)
                 CompletedCapability.objects.create(clientuser=clientuser, capability=capability, question=question, score=score)
-                # if clientuser.get_unanswered_questions(capability).exists():
-                #     return redirect('clientuser:completed_capability', pk)
-                # else:
+                if clientuser.get_unanswered_questions(capability).exists():
+                    return redirect('clientuser:completed_capability', pk)
+                else:
                     # maturitylevel_score = 15
                     # maturitylevel = clientuser_answer.maturitylevel
                     # maturitylevel_score = MaturityLevel.objects.get(pk=maturitylevel).score
@@ -118,8 +118,8 @@ def completed_capability(request, pk):
                     # question_weightage = Question.objects.get(capability=pk).weightage
                     # score = round((maturitylevel_score * question_weightage) / 100.0, 2)
                     # CompletedCapability.objects.create(clientuser=clientuser, capability=capability, score=score)
-                messages.success(request, 'Congratulations! You completed the capability %s with success! You scored %s points.' % (capability.name, score))
-                return redirect('clientuser:capability_list')
+                    messages.success(request, 'Congratulations! You completed the capability %s with success! You scored %s points.' % (capability.name, score))
+                    return redirect('clientuser:capability_list')
     else:
         form = CompletedCapabilityForm(question=question)
 

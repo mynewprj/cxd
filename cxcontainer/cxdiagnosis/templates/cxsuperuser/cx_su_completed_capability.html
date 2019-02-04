@@ -26,6 +26,7 @@
           <tr>
             <th>Client User</th>
             <th>Domains</th>
+            <th>Capability</th>
             <th>Date</th>
             <th>Score</th>
           </tr>
@@ -35,6 +36,7 @@
             <tr>
               <td>{{ completed_capability.clientuser.user.username }}</td>
               <td>{{ completed_capability.clientuser.domains }}</td>
+              <td>{{ completed_capability.question }}</td>
               <td>{{ completed_capability.date|naturaltime }}</td>
               <td>{{ completed_capability.score }}</td>
             </tr>
