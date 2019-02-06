@@ -2,3 +2,4 @@ Django==2.0.1
 django-crispy-forms==1.7.0
 django-admin-autocomplete-filter==0.2
 pytz==2017.3
+reportlab==3.5.13

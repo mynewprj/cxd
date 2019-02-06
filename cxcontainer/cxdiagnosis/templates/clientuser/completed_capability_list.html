@@ -7,6 +7,9 @@
     <a href="{% url 'change_password' %}">Required change password</a>
   {% else %}
     {% include 'clientuser/_header.html' with active='completed' %}
+    <div class="text-right">
+      <a href="{% url 'clientuser:download_pdf' user.pk %}">Download PDF</a>
+    </div>
     <div class="card">
       <table class="table mb-0">
         <thead>
