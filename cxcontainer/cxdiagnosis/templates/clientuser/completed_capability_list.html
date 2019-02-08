@@ -16,8 +16,8 @@
           <tr>
             <th>Capability Area</th>
             <th>Capability</th>
-            <th>Date</th>
             <th>Maturity Level</th>
+            <th>Date</th>
           </tr>
         </thead>
         <tbody>
@@ -25,8 +25,8 @@
             <tr>
               <td>{{ completed_capability.capability.name }}</td>
               <td>{{ completed_capability.question.text }}</td>
-              <td>{{ completed_capability.date|naturaltime }}</td>
               <td>{{ completed_capability.score }}</td>
+              <td>{{ completed_capability.date|naturaltime }}</td>
             </tr>
           {% empty %}
             <tr>

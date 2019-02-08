@@ -68,10 +68,14 @@ class CapabilityListView(ListView):
         clientuser = self.request.user.clientuser
         clientuser_domains = clientuser.domains
         # .values_list('pk', flat=True)
-        completed_capabilities = clientuser.capabilities.values_list(
-            'pk', flat=True)
+        # completed_capabilities = clientuser.capabilities.values_list(
+        #     'pk', flat=True)
+        completed_capability_ids = []
+        for i in clientuser.capabilities.values_list('pk',flat=True).distinct():
+            if not clientuser.get_unanswered_questions(get_object_or_404(Capability, pk=i)).exists():
+                completed_capability_ids.append(i)
         queryset = Capability.objects \
-            .exclude(pk__in=completed_capabilities) \
+            .exclude(pk__in=completed_capability_ids) \
             .annotate(questions_count=Count('questions')) \
             .filter(questions_count__gt=0)
         return queryset
@@ -110,7 +114,7 @@ def write_pdf_view(request, pk):
     Story = [Spacer(1, 2*inch)]
     style = styles["Normal"]
 
-    header_line = ("Capability Area Capability Date Score")
+    header_line = ('''<span><font size="10" color=black><b>  Capability Area  </b></font><font size="10" color=gray><b>  Capability  </b></font><font size="10" color=black><b>  Score  </b></font><font size="10" color=gray><b>  Date  </b></font></span>''')
     p = Paragraph(header_line, style)
     Story.append(p)
     Story.append(Spacer(1, 0.2*inch))
@@ -134,12 +138,12 @@ def write_pdf_view(request, pk):
             #     p = Paragraph(formated_string, style)
             #     ca = completed_capability.capability
 
-            formated_string = (" %100s %400s %30s %10s " %
-                               (completed_capability.capability, completed_capability.question, completed_capability.date, completed_capability.score))
+            formated_string = ('''<span> <font size="8" color=black>%100s</font>     <font size="8" color=gray>%400s</font>   <font size="8" color=black><i>%30s</i></font>   <font size="8" color=gray>%10s</font>  </span>''' %
+                               (completed_capability.capability, completed_capability.question, completed_capability.score, completed_capability.date))
             p = Paragraph(formated_string, style)
             Story.append(p)
             Story.append(Spacer(1, 0.2*inch))
-    ca = None
+    # ca = None
     doc.build(Story)
 
     fs = FileSystemStorage(temp_dir)

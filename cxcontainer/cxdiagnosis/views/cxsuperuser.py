@@ -42,7 +42,7 @@ class CxSuCapabilityList(ListView):
     def get_queryset(self):
         queryset = self.request.user.capabilities \
             .annotate(questions_count=Count('questions', distinct=True)) \
-            .annotate(completed_count=Count('completed_capabilities', distinct=True))
+            .annotate(completed_count=Count('clientuser', distinct=True))
         return queryset
 
 @method_decorator([login_required, cxsuperuser_required], name='dispatch')
