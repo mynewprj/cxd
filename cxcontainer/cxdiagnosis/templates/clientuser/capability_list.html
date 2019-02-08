@@ -10,7 +10,7 @@
         <thead>
           <tr>
             <th>Capability Area</th>
-            <th>Length</th>
+            <th>No of Capability</th>
             <th></th>
           </tr>
         </thead>
@@ -18,7 +18,7 @@
           {% for capability in capabilities %}
             <tr>
               <td class="align-middle">{{ capability.name }}</td>
-              <td class="align-middle">{{ capability.questions_count }} questions</td>
+              <td class="align-middle">{{ capability.questions_count }} capabilities</td>
               <td class="text-right">
                 <a href="{% url 'clientuser:completed_capability' capability.pk %}" class="btn btn-primary">Start now</a>
               </td>
