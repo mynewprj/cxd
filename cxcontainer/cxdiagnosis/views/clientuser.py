@@ -6,11 +6,12 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.shortcuts import redirect, render
 from django.db.models import Count
+from django.forms import modelformset_factory
 from django.contrib import messages
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
-from ..models import ClientUser, User, Capability, CompletedCapability, Question, Answer, MaturityLevel
+from ..models import ClientUser, User, Capability, CompletedCapability, Question, Answer, MaturityLevel, ClientUserAnswer
 from ..forms import ClientUserSignUpForm, CompletedCapabilityForm, ClientUserDomainForm
 from ..decorators import clientuser_required
 # from easy_pdf.views import PDFTemplateView
@@ -104,7 +105,8 @@ class CompletedCapabilitylistView(ListView):
 #     model = CompletedCapability
 #     template_name = 'clientuser/download_pdf.html'
 
-
+@login_required
+@clientuser_required
 def write_pdf_view(request, pk):
     # capability = get_object_or_404(CompletedCapability)
     # clientuser = request.user.clientuser
@@ -169,6 +171,99 @@ def write_pdf_view(request, pk):
 
 @login_required
 @clientuser_required
+def new_product(request):
+    if request.method == 'POST':
+        form = StartAllCapabilitiesForm(request.user, request.POST)
+        if form.is_valid():
+            product = form.save(commit=False)
+            product.user = request.user
+            product.save()
+            return redirect('clientuser:capability_list')
+    else:
+        form = StartAllCapabilitiesForm(request.user)
+    return render(request, 'clientuser/completed_capability_form.html', {'form': form})
+
+# @login_required
+# @clientuser_required
+# def start_all_capablilities(request, pk):
+#     ProductFormSet = modelformset_factory(Capability, fields=('owner', ), extra=0)
+#     data = request.POST or None
+#     # formset = ProductFormSet(data=data, queryset=Product.objects.filter(user=request.user))
+#     # for form in formset:
+#     #     form.fields['category'].queryset = Category.objects.filter(user=request.user)
+#
+#     formset = ProductFormSet(data=data, queryset=Question.objects.filter(capability__owner=pk))
+#     for form in formset:
+#         form.fields['answer'].queryset = Answer.objects.filter(question__capability__owner=pk)
+#
+#     if request.method == 'POST' and formset.is_valid():
+#         formset.save()
+#         return redirect('clientuser:capability_list')
+#
+#     return render(request, 'clientuser/completed_capability_formset.html', {'formset': formset})
+
+@login_required
+@clientuser_required
+def edit_completed_capability(request, pk, editqno, pgid, isprev, isnex):
+    capability = get_object_or_404(Capability, pk=pk)
+    clientuser = request.user.clientuser
+
+    total_questions = capability.questions.count()
+    answered_questions = clientuser.get_answered_questions(capability, )
+    total_answered_questions = answered_questions.count()
+    progress = round(((total_answered_questions - pgid) / total_questions) * 100)
+    question = answered_questions.order_by('-id')[pgid]
+    cuaid=ClientUserAnswer.objects.filter(clientuser=clientuser).latest('id').id - pgid
+    cuainst=ClientUserAnswer.objects.get(id=cuaid)
+
+    if request.method == 'POST':
+        form = CompletedCapabilityForm(instance=cuainst, question=question, data=request.POST)
+        if form.is_valid():
+            with transaction.atomic():
+                clientuser_answer = form.save(commit=False)
+                clientuser_answer.clientuser = clientuser
+                clientuser_answer.save()
+                answer = clientuser_answer.answer.pk
+                question = Answer.objects.get(pk=answer).question
+                question_weightage = Question.objects.get(
+                    text=question).weightage
+                maturitylevel = Answer.objects.get(pk=answer).maturitylevel
+                maturitylevel_score = MaturityLevel.objects.get(
+                    name=maturitylevel).score
+                score = round((maturitylevel_score * question_weightage) / 100.0, 2)
+                ccid=CompletedCapability.objects.filter(clientuser=clientuser).latest('id').id - pgid
+                CompletedCapability.objects.filter(id=ccid, clientuser=clientuser).update(clientuser=clientuser, capability=capability, question=question, score=score)
+                # CompletedCapability.objects.create(clientuser=clientuser, capability=capability, question=question, score=score)
+
+                if pgid > 0:
+                    pgid = pgid - 1
+                    editqno = editqno + 1
+                    return redirect('clientuser:edit_completed_capability', pk, editqno, pgid, 0, 1)
+                elif clientuser.get_unanswered_questions(capability).exists():
+                    return redirect('clientuser:completed_capability', pk)
+                else:
+                    # messages.success(request, 'Congratulations! You completed the capability %s with success! You scored %s points.' % (capability.name, score))
+                    return redirect('clientuser:capability_list')
+    else:
+        form = CompletedCapabilityForm(instance=cuainst, question=question,)
+
+    pgid = pgid + 1
+    editqno = editqno - 1
+
+    return render(request, 'clientuser/edit_completed_capability_form.html', {
+        'capability': capability,
+        'question': question,
+        'form': form,
+        'progress': progress,
+        'editqno' : editqno,
+        'pgid' : pgid,
+        'total_answered_questions' : total_answered_questions,
+        'isprev' : isprev,
+        'isnex' : isnex,
+    })
+
+@login_required
+@clientuser_required
 def completed_capability(request, pk):
     capability = get_object_or_404(Capability, pk=pk)
     clientuser = request.user.clientuser
@@ -215,8 +310,7 @@ def completed_capability(request, pk):
                     # question_weightage = Question.objects.get(capability=pk).weightage
                     # score = round((maturitylevel_score * question_weightage) / 100.0, 2)
                     # CompletedCapability.objects.create(clientuser=clientuser, capability=capability, score=score)
-                    messages.success(request, 'Congratulations! You completed the capability %s with success! You scored %s points.' % (
-                        capability.name, score))
+                    # messages.success(request, 'Congratulations! You completed the capability %s with success! You scored %s points.' % (capability.name, score))
                     return redirect('clientuser:capability_list')
     else:
         form = CompletedCapabilityForm(question=question)
@@ -225,5 +319,7 @@ def completed_capability(request, pk):
         'capability': capability,
         'question': question,
         'form': form,
-        'progress': progress
+        'progress': progress,
+        'total_unanswered_questions' : total_unanswered_questions,
+        'total_questions' : total_questions
     })

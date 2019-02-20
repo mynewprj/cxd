@@ -6,24 +6,21 @@
   {% else %}
     {% include 'csguser/_header.html' with active='new' %}
     <div class="card">
-      <a>CSG user</a>
       <table class="table mb-0">
         <thead>
           <tr>
-            <th>Capabiluty Area</th>
-            <th>Domain</th>
-            <th>Length</th>
+            <th>Capability Area</th>
+            <th>No of Capability</th>
             <th></th>
           </tr>
         </thead>
         <tbody>
-          {% for quiz in quizzes %}
+          {% for capability in capabilities %}
             <tr>
-              <td class="align-middle">{{ Capability.name }}</td>
-              <td class="align-middle">{{ Capability.domain.get_html_badge }}</td>
-              <td class="align-middle">{{ Capability.questions_count }} questions</td>
+              <td class="align-middle">{{ capability.name }}</td>
+              <td class="align-middle">{{ capability.questions_count }} capabilities</td>
               <td class="text-right">
-                <a href="{% url 'csguser:result_of_capabilities' quiz.pk %}" class="btn btn-primary">Start quiz</a>
+                <a href="{% url 'csguser:csg_completed_capability' capability.pk %}" class="btn btn-primary">Start now</a>
               </td>
             </tr>
           {% empty %}

@@ -16,6 +16,8 @@ urlpatterns = [
              name='completed_capability_list'),
         path('downloadpdf/<int:pk>/', clientuser.write_pdf_view,
              name='download_pdf'),
+        path('editcapability/<int:pk>/<int:editqno>/<int:pgid>/<int:isprev>/<int:isnex>/', clientuser.edit_completed_capability,
+             name='edit_completed_capability'),
         path('capability/<int:pk>/', clientuser.completed_capability,
              name='completed_capability'),
     ], 'cxdiagnosis'), namespace='clientuser')),
@@ -24,6 +26,14 @@ urlpatterns = [
 
     path('csguser/', include(([
         path('', csguser.CsgCapabilityList.as_view(), name='csg_capability_list'),
+        path('completed/', csguser.CsgCompletedCapabilitylistView.as_view(),
+             name='csg_completed_capability_list'),
+        path('downloadpdf/<int:pk>/', csguser.write_pdf_view,
+             name='csg_download_pdf'),
+        path('editcapability/<int:pk>/<int:editqno>/<int:pgid>/<int:isprev>/<int:isnex>/', csguser.edit_completed_capability,
+             name='csg_edit_completed_capability'),
+        path('capability/<int:pk>/', csguser.completed_capability,
+             name='csg_completed_capability'),
     ], 'cxdiagnosis'), namespace='csguser')),
 
     path('cxsuperuser/', include(([

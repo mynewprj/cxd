@@ -67,7 +67,12 @@ class ClientUser(models.Model):
         answered_questions = self.capability_answers \
             .filter(answer__question__capability=capability) \
             .values_list('answer__question__pk', flat=True)
-        questions = capability.questions.exclude(pk__in=answered_questions).order_by('text')
+        questions = capability.questions.exclude(pk__in=answered_questions).order_by('pk')
+        return questions
+
+    def get_answered_questions(self, capability):
+        unanswered_questions = self.get_unanswered_questions(capability)
+        questions = capability.questions.exclude(pk__in=unanswered_questions).order_by('pk')
         return questions
 
     def __str__(self):
@@ -96,7 +101,6 @@ class CompletedCapability(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='completed_capabilities')
     score = models.FloatField()
     date = models.DateTimeField(auto_now_add=True)
-
 
 class ClientUserAnswer(models.Model):
     clientuser = models.ForeignKey(ClientUser, on_delete=models.CASCADE, related_name='capability_answers')

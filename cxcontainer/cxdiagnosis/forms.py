@@ -157,6 +157,45 @@ class BaseAnswerInlineFormSet(forms.BaseInlineFormSet):
         # if not has_one_correct_answer:
         #     raise ValidationError('Maturity level need to be unique across answers', code='no_correct_answer')
 
+# from django import forms
+# from .models import Category, Product
+
+# class StartAllCapabilitiesForm(forms.ModelForm):
+#     answer = forms.ModelChoiceField(
+#         queryset=Answer.objects.none(),
+#         widget=forms.RadioSelect(),
+#         required=True,
+#         empty_label=None)
+#
+#     class Meta:
+#         model = ClientUserAnswer
+#         fields = ('answer', )
+#
+#     def __init__(self, *args, **kwargs):
+#         question = kwargs.pop('question')
+#         super().__init__(*args, **kwargs)
+#         self.fields['answer'].queryset = question.answers.order_by('pk')
+
+    # def __init__(self, user, *args, **kwargs):
+    #     super(StartAllCapabilitiesForm, self).__init__(*args, **kwargs)
+    #     self.fields['capability'].queryset = Category.objects.filter(user=user)
+
+# class EditCompletedCapabilityForm(forms.ModelForm):
+#     answer = forms.ModelChoiceField(
+#         queryset=Answer.objects.none(),
+#         widget=forms.RadioSelect(),
+#         required=True,
+#         empty_label=None)
+#
+#     class Meta:
+#         model = ClientUserAnswer
+#         fields = ('answer', )
+#
+#     def __init__(self, *args, **kwargs):
+#         question = kwargs.pop('question')
+#         super().__init__(*args, **kwargs)
+#         self.fields['answer'].queryset = question.answers.order_by('pk')
+
 class CompletedCapabilityForm(forms.ModelForm):
     answer = forms.ModelChoiceField(
         queryset=Answer.objects.none(),
@@ -171,7 +210,7 @@ class CompletedCapabilityForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         question = kwargs.pop('question')
         super().__init__(*args, **kwargs)
-        self.fields['answer'].queryset = question.answers.order_by('text')
+        self.fields['answer'].queryset = question.answers.order_by('pk')
 
 
     #     maturitylevel = forms.ModelChoiceField(

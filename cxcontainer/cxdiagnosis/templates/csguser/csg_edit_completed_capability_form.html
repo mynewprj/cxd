@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+  {% if user.change_pass %}
+    <a href="{% url 'change_password' %}">Required change password</a>
+  {% else %}
+    {% include 'csguser/_header.html' with active='new' %}
+    <div class="progress mb-3">
+      <div class="progress-bar" role="progressbar" aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ progress }}%"></div>
+    </div>
+    <h3 class="mb-3">{{ capability.name }}</h3>
+    <p class="lead">{{ question.text }}</p>
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {{ form|crispy }}
+      {% if total_answered_questions != pgid %}
+        <a href="{% url 'csguser:csg_edit_completed_capability' capability.pk question.id pgid 1 0 %}" class="btn btn-primary">← Previous</a>
+      {% endif %}
+      <button type="submit" class="btn btn-primary">Update & Next →</button>
+    </form>
+  {% endif %}
+{% endblock %}

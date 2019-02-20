@@ -19,7 +19,7 @@
     <div class="card">
       <div class="card-header">
         <strong>Completed Capabilities</strong>
-        <span class="badge badge-pill badge-primary float-right">Average Score: {{ Capability_score.average_score|default_if_none:0.0 }}</span>
+        <span class="badge badge-pill float-right"> {{ Capability_score.average_score|default_if_none:0.0 }}</span>
       </div>
       <table class="table mb-0">
         <thead>

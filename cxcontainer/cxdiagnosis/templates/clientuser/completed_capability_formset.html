@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+  {% if user.change_pass %}
+    <a href="{% url 'change_password' %}">Required change password</a>
+  {% else %}
+    {% include 'clientuser/_header.html' with active='new' %}
+    <div class="progress mb-3">
+      <div class="progress-bar" role="progressbar" aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ progress }}%"></div>
+    </div>
+    <h2 class="mb-3">{{ capability.owner }}</h2>
+    <p class="lead">{{ question.text }}</p>
+
+    <form method="post">
+      {% csrf_token %}
+      {{ formset.as_p }}
+      <input type="submit" value="save all Capabilities">
+    </form>
+  {% endif %}
+{% endblock %}
