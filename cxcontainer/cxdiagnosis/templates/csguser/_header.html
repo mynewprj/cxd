@@ -2,11 +2,17 @@
   <strong>Domains: </strong><span class="badge badge-pill badge-dark"> {{ user.csguser.domains }}</span>
   <strong>Organisation: </strong><span class="badge badge-pill badge-secondary"> {{ user.csguser.organisations }}</span>
 </p>
-<ul class="nav nav-tabs mb-3">
+<ul class="nav nav-tabs mb-4">
   <li class="nav-item">
-    <a class="nav-link{% if active == 'new' %} active{% endif %}" href="{% url 'csguser:csg_capability_list' %}">New</a>
+    <a class="nav-link{% if active == 'new' %} active{% endif %}" href="{% url 'csguser:capability_list' %}">New</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link{% if active == 'completed' %} active{% endif %}" href="{% url 'csguser:csg_completed_capability_list' %}">Completed</a>
+    <a class="nav-link{% if active == 'completed' %} active{% endif %}" href="{% url 'csguser:completed_capability_list' %}">Completed</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link{% if active == 'CSG View' %} active{% endif %}" href="{% url 'csguser:csg_domain_completed_capabilities' %}">CSG View</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link{% if active == 'DU Details' %} active{% endif %}" href="{% url 'csguser:update_list_capability' %}">DU Details</a>
   </li>
 </ul>

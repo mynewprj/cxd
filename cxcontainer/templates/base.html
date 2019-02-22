@@ -8,17 +8,17 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="{% static 'css/cxdiagnosis.css' %}">
     {% if user.is_authenticated %}
-      {% if user.is_clientuser %}
-        <link rel="stylesheet" type="text/css" href="{% static 'css/clientuser.css' %}">
-      {% elif user.is_csguser %}
+      {% if user.is_csguser %}
         <link rel="stylesheet" type="text/css" href="{% static 'css/csguser.css' %}">
       {% elif user.is_cxsuperuser %}
         <link rel="stylesheet" type="text/css" href="{% static 'css/cxsuperuser.css' %}">
+      {% else %}
+        <link rel="stylesheet" type="text/css" href="{% static 'css/clientuser.css' %}">
       {% endif %}
     {% endif %}
   </head>
   <body>
-    <div class="container my-5">
+    <div class="container my-3">
       <div class="row justify-content-center">
         <div class="col-xs-5 col-sm-7 col-md-10 col-lg-12">
           <div class="row">

@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags humanize %}
+
+{% block content %}
+  {% if user.change_pass %}
+    <a href="{% url 'change_password' %}">Required change password</a>
+  {% else %}
+    {% include 'csguser/_header.html' with active='CSG View' %}
+    <div class="text-right">
+      <a href="{% url 'csguser:download_pdf' user.pk %}">Download PDF</a>
+    </div>
+    <div class="card">
+      <table class="table mb-0">
+        <thead>
+          <tr>
+            <th>User Names</th>
+            <th>Domains</th>
+            <th>Capability Area</th>
+            <th>Capability</th>
+            <th>Maturity Level</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for completed_capability in clientuserlist %}
+            <tr>
+              <td>{{ completed_capability.clientuser.user.first_name }}</td>
+              <td>{{ completed_capability.clientuser.domains }}</td>
+              <td>{{ completed_capability.capability.name }}</td>
+              <td>{{ completed_capability.question.text }}</td>
+              <td>{{ completed_capability.score }}</td>
+              <td>{{ completed_capability.date|naturaltime }}</td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td class="bg-light text-center font-italic" colspan="3">You haven't completed any capability yet.</td>
+            </tr>
+          {% endfor %}
+          {% for completed_capability in csguserlist %}
+            <tr>
+              <td>{{ completed_capability.csguser.user.first_name }}</td>
+              <td>{{ completed_capability.csguser.domains }}</td>
+              <td>{{ completed_capability.capability.name }}</td>
+              <td>{{ completed_capability.question.text }}</td>
+              <td>{{ completed_capability.score }}</td>
+              <td>{{ completed_capability.date|naturaltime }}</td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td class="bg-light text-center font-italic" colspan="3">You haven't completed any capability yet.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% endif %}
+{% endblock %}

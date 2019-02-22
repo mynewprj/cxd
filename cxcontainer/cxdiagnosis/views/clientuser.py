@@ -27,6 +27,7 @@ from reportlab.lib.units import inch
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 temp_dir = BASE_DIR + "\\..\\static\\temp"
+
 class ClientUserSignUpView(CreateView):
     model = User
     form_class = ClientUserSignUpForm
@@ -80,7 +81,6 @@ class CapabilityListView(ListView):
             .annotate(questions_count=Count('questions')) \
             .filter(questions_count__gt=0)
         return queryset
-
 
 @method_decorator([login_required, clientuser_required], name='dispatch')
 class CompletedCapabilitylistView(ListView):
