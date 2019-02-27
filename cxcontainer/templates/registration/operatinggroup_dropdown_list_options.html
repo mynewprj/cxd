@@ -1,0 +1,4 @@
+<option value="">---------</option>
+{% for operatinggroup in operatinggroups %}
+<option value="{{ operatinggroup.pk }}">{{ operatinggroup.pk }} {{ operatinggroup.name }}</option>
+{% endfor %}

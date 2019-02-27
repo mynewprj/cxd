@@ -22,7 +22,7 @@
         <a href="{% url 'clientuser:edit_completed_capability' capability.pk question.id 0 1 0 %}" class="btn btn-primary">← Previous</a>
       {% endif %}
       {% if progress == 100 %}
-        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="submit" class="btn btn-primary">Save & Submit</button>
       {% else %}
         <button type="submit" class="btn btn-primary">Save & Next →</button>
       {% endif %}

@@ -1,0 +1,4 @@
+<option value="">---------</option>
+{% for account in accounts %}
+<option value="{{ account.pk }}">{{ account.pk }} {{ account.name }}</option>
+{% endfor %}

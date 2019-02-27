@@ -11,8 +11,8 @@ urlpatterns = [
     path('clientuser/', include(([
         path('', clientuser.CapabilityListView.as_view(),
             name='capability_list'),
-        path('domains/', clientuser.ClientUserDomainView.as_view(),
-            name='clientuser_domains'),
+        # path('domains/', clientuser.ClientUserDomainView.as_view(),
+        #     name='clientuser_domains'),
         path('completed/', clientuser.CompletedCapabilitylistView.as_view(),
             name='completed_capability_list'),
         path('downloadpdf/<int:pk>/', clientuser.write_pdf_view,

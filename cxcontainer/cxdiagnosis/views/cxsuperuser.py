@@ -39,8 +39,14 @@ class CxSuCapabilityList(ListView):
     context_object_name = 'capabilities'
     template_name = 'cxsuperuser/cx_su_update_list_capability.html'
 
+    # def get_queryset(self):
+    #     queryset = self.request.user.capabilities \
+    #         .annotate(questions_count=Count('questions', distinct=True)) \
+    #         .annotate(completed_count=Count('clientuser', distinct=True))
+    #     return queryset
+
     def get_queryset(self):
-        queryset = self.request.user.capabilities \
+        queryset = Capability.objects \
             .annotate(questions_count=Count('questions', distinct=True)) \
             .annotate(completed_count=Count('clientuser', distinct=True))
         return queryset
@@ -69,13 +75,16 @@ class UpdateCapabilityView(UpdateView):
         kwargs['questions'] = self.get_object().questions.annotate(answers_count=Count('answers'))
         return super().get_context_data(**kwargs)
 
+    # def get_queryset(self):
+    #     '''
+    #     This method is an implicit object-level permission management
+    #     This view will only match the ids of existing capabilities that belongs
+    #     to the logged in user.
+    #     '''
+    #     return self.request.user.capabilities.all()
+
     def get_queryset(self):
-        '''
-        This method is an implicit object-level permission management
-        This view will only match the ids of existing capabilities that belongs
-        to the logged in user.
-        '''
-        return self.request.user.capabilities.all()
+        return Capability.objects.all()
 
     def get_success_url(self):
         return reverse('cxsuperuser:cx_su_update_capability', kwargs={'pk': self.object.pk})
@@ -100,7 +109,9 @@ class CompletedCapabilityView(DetailView):
         return super().get_context_data(**kwargs)
 
     def get_queryset(self):
-        return self.request.user.capabilities.all()
+        # the below is commented as to access capability of other owners
+        # return self.request.user.capabilities.all()
+        return Capability.objects.all()
 
 @method_decorator([login_required, cxsuperuser_required], name='dispatch')
 class DeleteCapabilityView(DeleteView):
@@ -115,7 +126,9 @@ class DeleteCapabilityView(DeleteView):
         return super().delete(request, *args, **kwargs)
 
     def get_queryset(self):
-        return self.request.user.capabilities.all()
+        # the below is commented as to access capability of other owners
+        # return self.request.user.capabilities.all()
+        return Capability.objects.all()
 
 @login_required
 @cxsuperuser_required
@@ -124,7 +137,10 @@ def question_add(request, pk):
     # by the owner, which is the logged in user, we are protecting
     # this view at the object-level. Meaning only the owner of
     # capability will be able to add questions to it.
-    capability = get_object_or_404(Capability, pk=pk, owner=request.user)
+
+    # the below is commented as to access capability of other owners
+    # capability = get_object_or_404(Capability, pk=pk, owner=request.user)
+    capability = get_object_or_404(Capability, pk=pk)
 
     if request.method == 'POST':
         form = QuestionForm(request.POST)
@@ -151,7 +167,10 @@ def question_change(request, capability_pk, question_pk):
     # change its details and also only questions that belongs to this
     # specific capability can be changed via this url (in cases where the
     # user might have forged/player with the url params.
-    capability = get_object_or_404(Capability, pk=capability_pk, owner=request.user)
+
+    # the below is commented as to access capability of other owners
+    # capability = get_object_or_404(Capability, pk=capability_pk, owner=request.user)
+    capability = get_object_or_404(Capability, pk=capability_pk)
     question = get_object_or_404(Question, pk=question_pk, capability=capability)
 
     AnswerFormSet = inlineformset_factory(

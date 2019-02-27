@@ -23,6 +23,12 @@ urlpatterns = [
     path('cxaccounts/', include('django.contrib.auth.urls')),
     # path('cxaccounts/signup/', cxdiagnosis.SignUpView.as_view(), name='signup'),
     path('cxaccounts/client/signup/', clientuser.ClientUserSignUpView.as_view(), name='client_signup'),
+    path('cxaccounts/ajax/load-operatinggroups/', cxdiagnosis.load_operatinggroups, name='ajax_load_operatinggroups'),
+    path('cxaccounts/ajax/load-industrygroups/', cxdiagnosis.load_industrygroups, name='ajax_load_industrygroups'),
+    path('cxaccounts/ajax/load-deliverygroups/', cxdiagnosis.load_deliverygroups, name='ajax_load_deliverygroups'),
+    path('cxaccounts/ajax/load-accounts/', cxdiagnosis.load_accounts, name='ajax_load_accounts'),
+    path('cxaccounts/ajax/load-deliveryunits/', cxdiagnosis.load_deliveryunits, name='ajax_load_deliveryunits'),
+    path('cxaccounts/ajax/load-projects/', cxdiagnosis.load_projects, name='ajax_load_projects'),
     path('cxaccounts/csg/signup/', csguser.CsgUserSignUpView.as_view(), name='csg_signup'),
     path('cxaccounts/cxadmin/signup/', cxsuperuser.CxSuperUserSignUpView.as_view(), name='cxsuper_signup'),
 

@@ -14,7 +14,7 @@
         <li class="breadcrumb-item active" aria-current="page">Results</li>
       </ol>
     </nav>
-    <h2 class="mb-3">{{ capability.name }} Results</h2>
+    <h2 class="mb-3">{{ capability.name }}</h2>
 
     <div class="card">
       <div class="card-header">
@@ -25,7 +25,6 @@
         <thead>
           <tr>
             <th>Client User</th>
-            <th>Domains</th>
             <th>Capability</th>
             <th>Score</th>
             <th>Date</th>
@@ -35,7 +34,6 @@
           {% for completed_capability in completed_capabilities %}
             <tr>
               <td>{{ completed_capability.clientuser.user.username }}</td>
-              <td>{{ completed_capability.clientuser.domains }}</td>
               <td>{{ completed_capability.question }}</td>
               <td>{{ completed_capability.score }}</td>
               <td>{{ completed_capability.date|naturaltime }}</td>

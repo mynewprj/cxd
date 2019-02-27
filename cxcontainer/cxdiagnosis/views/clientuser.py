@@ -12,7 +12,8 @@ from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from ..models import ClientUser, User, Capability, CompletedCapability, Question, Answer, MaturityLevel, ClientUserAnswer
-from ..forms import ClientUserSignUpForm, CompletedCapabilityForm, ClientUserDomainForm
+from ..forms import ClientUserSignUpForm, CompletedCapabilityForm
+# , ClientUserDomainForm
 from ..decorators import clientuser_required
 # from easy_pdf.views import PDFTemplateView
 # from django_xhtml2pdf.views import PdfMixin
@@ -32,6 +33,7 @@ class ClientUserSignUpView(CreateView):
     model = User
     form_class = ClientUserSignUpForm
     template_name = 'registration/signup_form.html'
+    # success_url = reverse_lazy('client_signup')
 
     def get_context_data(self, **kwargs):
         kwargs['user_type'] = 'clientuser'
@@ -43,20 +45,19 @@ class ClientUserSignUpView(CreateView):
         # return redirect('home')
         return redirect('clientuser:capability_list')
 
-
-@method_decorator([login_required, clientuser_required], name='dispatch')
-class ClientUserDomainView(UpdateView):
-    model = ClientUser
-    form_class = ClientUserDomainForm
-    template_name = 'clientuser/domains_form.html'
-    success_url = reverse_lazy('clientuser:capability_list')
-
-    def get_object(self):
-        return self.request.user.clientuser
-
-    def form_valid(self, form):
-        messages.success(self.request, 'Interests updated with success!')
-        return super().form_valid(form)
+# @method_decorator([login_required, clientuser_required], name='dispatch')
+# class ClientUserDomainView(UpdateView):
+#     model = ClientUser
+#     form_class = ClientUserDomainForm
+#     template_name = 'clientuser/domains_form.html'
+#     success_url = reverse_lazy('clientuser:capability_list')
+#
+#     def get_object(self):
+#         return self.request.user.clientuser
+#
+#     def form_valid(self, form):
+#         messages.success(self.request, 'Interests updated with success!')
+#         return super().form_valid(form)
 
 
 @method_decorator([login_required, clientuser_required], name='dispatch')
@@ -68,7 +69,7 @@ class CapabilityListView(ListView):
 
     def get_queryset(self):
         clientuser = self.request.user.clientuser
-        clientuser_domains = clientuser.domains
+        # clientuser_domains = clientuser.domains
         # .values_list('pk', flat=True)
         # completed_capabilities = clientuser.capabilities.values_list(
         #     'pk', flat=True)

@@ -1,0 +1,4 @@
+<option value="">---------</option>
+{% for industrygroup in industrygroups %}
+<option value="{{ industrygroup.pk }}">{{ industrygroup.pk }} {{ industrygroup.name }}</option>
+{% endfor %}

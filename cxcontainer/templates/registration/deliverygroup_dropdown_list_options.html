@@ -1,0 +1,4 @@
+<option value="">---------</option>
+{% for deliverygroup in deliverygroups %}
+<option value="{{ deliverygroup.pk }}">{{ deliverygroup.pk }} {{ deliverygroup.name }}</option>
+{% endfor %}

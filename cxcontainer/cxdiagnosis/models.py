@@ -9,19 +9,50 @@ class User(AbstractUser):
     is_cxsuperuser = models.BooleanField(default=False)
     change_pass = models.BooleanField(default=False)
 
-class Domain(models.Model):
-    name = models.CharField(max_length=30)
-
-    def get_html_badge(self):
-        name = escape(self.name)
-        html = '<span class="badge badge-primary">%s</span>' % (name)
-        return mark_safe(html)
+class GeographyReasons(models.Model):
+    name = models.CharField(max_length=50)
 
     def __str__(self):
         return self.name
 
-class Organisation(models.Model):
+class OperatingGroups(models.Model):
     name = models.CharField(max_length=50)
+    geographyreason = models.ForeignKey(GeographyReasons, on_delete=models.SET_NULL, null=True, related_name='geographyreasons_operatinggroups')
+
+    def __str__(self):
+        return self.name
+
+class IndustryGroups(models.Model):
+    name = models.CharField(max_length=50)
+    operatinggroup = models.ForeignKey(OperatingGroups, on_delete=models.SET_NULL, null=True, related_name='operatinggroups_industrygroups')
+
+    def __str__(self):
+        return self.name
+
+class DeliveryGroups(models.Model):
+    name = models.CharField(max_length=50)
+    industrygroup = models.ForeignKey(IndustryGroups, on_delete=models.SET_NULL, null=True, related_name='industrygroups_deliverygroups')
+
+    def __str__(self):
+        return self.name
+
+class Accounts(models.Model):
+    name = models.CharField(max_length=50)
+    deliverygroup = models.ForeignKey(DeliveryGroups, on_delete=models.SET_NULL, null=True, related_name='deliverygroups_accounts')
+
+    def __str__(self):
+        return self.name
+
+class DeliveryUnits(models.Model):
+    name = models.CharField(max_length=50)
+    account = models.ForeignKey(Accounts, on_delete=models.SET_NULL, null=True, related_name='accounts_deliveryunits')
+
+    def __str__(self):
+        return self.name
+
+class Projects(models.Model):
+    name = models.CharField(max_length=50)
+    deliveryunit = models.ForeignKey(DeliveryUnits, on_delete=models.SET_NULL, null=True, related_name='deliveryunits_projects')
 
     def __str__(self):
         return self.name
@@ -59,9 +90,14 @@ class Answer(models.Model):
 
 class ClientUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    geographyreason = models.ForeignKey(GeographyReasons, on_delete=models.SET_NULL, null=True, related_name='geographyreasons_clientusers')
+    operatinggroup = models.ForeignKey(OperatingGroups, on_delete=models.SET_NULL, null=True, related_name='operatinggroups_clientusers')
+    industrygroup = models.ForeignKey(IndustryGroups, on_delete=models.SET_NULL, null=True, related_name='industrygroups_clientusers')
+    deliverygroup = models.ForeignKey(DeliveryGroups, on_delete=models.SET_NULL, null=True, related_name='deliverygroups_clientusers')
+    account = models.ForeignKey(Accounts, on_delete=models.SET_NULL, null=True, related_name='accounts_clientusers')
+    deliveryunit = models.ForeignKey(DeliveryUnits, on_delete=models.SET_NULL, null=True, related_name='deliveryunits_clientusers')
+    project = models.ForeignKey(Projects, on_delete=models.SET_NULL, null=True, related_name='projects_clientusers')
     capabilities = models.ManyToManyField(Capability, through='CompletedCapability')
-    domains = models.ForeignKey(Domain, on_delete=models.SET_NULL, null=True, related_name='domains_clientusers')
-    organisations = models.ForeignKey(Organisation, on_delete=models.SET_NULL, null=True)
 
     def get_unanswered_questions(self, capability):
         answered_questions = self.capability_answers \
@@ -81,8 +117,7 @@ class ClientUser(models.Model):
 class CsgUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     capabilities = models.ManyToManyField(Capability, through='CsgCompletedCapability')
-    domains = models.ForeignKey(Domain, on_delete=models.SET_NULL, null=True, related_name='domains_csgusers')
-    organisations = models.ForeignKey(Organisation, on_delete=models.SET_NULL, null=True)
+    geographyreason = models.ForeignKey(GeographyReasons, on_delete=models.SET_NULL, null=True, related_name='geographyreasons_csguser')
 
     def get_unanswered_questions(self, capability):
         answered_questions = self.csg_capability_answers \
@@ -101,8 +136,7 @@ class CsgUser(models.Model):
 
 class CxSuperUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    domains = models.ForeignKey(Domain, on_delete=models.SET_NULL, null=True)
-    organisations = models.ForeignKey(Organisation, on_delete=models.SET_NULL, null=True)
+    geographyreason = models.ForeignKey(GeographyReasons, on_delete=models.SET_NULL, null=True, related_name='geographyreasons_cxsuperuser')
 
     def __str__(self):
         return self.user.username

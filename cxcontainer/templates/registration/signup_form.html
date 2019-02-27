@@ -1,16 +1,100 @@
 {% extends 'base.html' %}
 
-{% load crispy_forms_tags %}
-
 {% block content %}
-  <div class="row">
-    <div class="col-md-8 col-sm-10 col-12">
-      <h2>Sign up as a {{ user_type }}</h2>
-      <form method="post" novalidate>
-        {% csrf_token %}
-        {{ form|crispy }}
-        <button type="submit" class="btn btn-success">Sign up</button>
-      </form>
-    </div>
-  </div>
+
+  <form method="post" id="ClientUserSignUpForm" data-operatinggroups-url="{% url 'ajax_load_operatinggroups' %}" data-industrygroups-url="{% url 'ajax_load_industrygroups' %}" data-deliverygroups-url="{% url 'ajax_load_deliverygroups' %}" data-accounts-url="{% url 'ajax_load_accounts' %}" data-deliveryunits-url="{% url 'ajax_load_deliveryunits' %}" data-projects-url="{% url 'ajax_load_projects' %}" novalidate>
+    {% csrf_token %}
+    <table>
+      {{ form.as_table }}
+    </table>
+    <button type="submit" class="btn btn-success">Sign up</button>
+  </form>
+
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script>
+    $("#id_geographyreason").change(function () {
+      var url = $("#ClientUserSignUpForm").attr("data-operatinggroups-url");
+      var grId = $(this).val();
+      $.ajax({
+        url: url,
+        data: {
+          'geographyreason': grId
+        },
+        success: function(result) {
+          $("#id_operatinggroup").html(result);
+        }
+      });
+    });
+
+    $("#id_operatinggroup").change(function () {
+      var url = $("#ClientUserSignUpForm").attr("data-industrygroups-url");
+      var ogId = $(this).val();
+      $.ajax({
+        url: url,
+        data: {
+          'operatinggroup': ogId
+        },
+        success: function(result) {
+          $("#id_industrygroup").html(result);
+        }
+      });
+    });
+
+    $("#id_industrygroup").change(function () {
+      var url = $("#ClientUserSignUpForm").attr("data-deliverygroups-url");
+      var igId = $(this).val();
+      $.ajax({
+        url: url,
+        data: {
+          'industrygroup': igId
+        },
+        success: function(result) {
+          $("#id_deliverygroup").html(result);
+        }
+      });
+    });
+
+    $("#id_deliverygroup").change(function () {
+      var url = $("#ClientUserSignUpForm").attr("data-accounts-url");
+      var dgId = $(this).val();
+      $.ajax({
+        url: url,
+        data: {
+          'deliverygroup': dgId
+        },
+        success: function(result) {
+          $("#id_account").html(result);
+        }
+      });
+    });
+
+    $("#id_account").change(function () {
+      var url = $("#ClientUserSignUpForm").attr("data-deliveryunits-url");
+      var acId = $(this).val();
+      $.ajax({
+        url: url,
+        data: {
+          'account': acId
+        },
+        success: function(result) {
+          $("#id_deliveryunit").html(result);
+        }
+      });
+    });
+
+    $("#id_deliveryunit").change(function () {
+      var url = $("#ClientUserSignUpForm").attr("data-projects-url");
+      var duId = $(this).val();
+      $.ajax({
+        url: url,
+        data: {
+          'deliveryunit': duId
+        },
+        success: function(result) {
+          $("#id_project").html(result);
+        }
+      });
+    });
+  </script>
+
 {% endblock %}
