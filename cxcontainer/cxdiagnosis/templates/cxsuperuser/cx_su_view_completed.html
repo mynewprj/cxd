@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags humanize %}
+
+{% block content %}
+  {% if user.change_pass %}
+    <a href="{% url 'change_password' %}">Required change password</a>
+  {% else %}
+    {% include 'cxsuperuser/_header.html' %}
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'cxsuperuser:cx_su_update_list_capability' %}">My capabilities</a></li>
+          <li class="breadcrumb-item active" aria-current="page"><a>Show All Results</a></li>
+        </ol>
+      </nav>
+      <div class="card">
+        <table class="table mb-0">
+          <thead>
+            <tr>
+              <th> User </th>
+              <th>Capability Area</th>
+              <th>Total Score</th>
+              <th>Overall Maturity Level</th>
+              <th>Completion Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for completed_capability in completedCap %}
+              <tr>
+                {% ifchanged completed_capability.clientuser__user__username %}
+                  <td>{{ completed_capability.clientuser__user__username }}</td>
+                {% else %}
+                  <td> </td>
+                {% endifchanged %}
+                <td>{{ completed_capability.capability__name }}</td>
+                {% for capQ in totQ %}
+                  {% if capQ.name == completed_capability.capability__name and capQ.qcount == completed_capability.qcount %}
+                    <td>{{ completed_capability.total }}</td>
+                    {% if completed_capability.total < 1 %}
+                      <td>Not started</td>
+                    {% elif completed_capability.total < 6 %}
+                      <td>Basic</td>
+                    {% elif completed_capability.total < 11 %}
+                      <td>Medium</td>
+                    {% elif completed_capability.total < 16 %}
+                      <td>Pro</td>
+                    {% endif %}
+                  {% elif capQ.name == completed_capability.capability__name and capQ.qcount != completed_capability.qcount %}
+                    <td>Incomplete</td>
+                    <td>---</td>
+                  {% endif %}
+                {% endfor %}
+                <td>{{ completed_capability.completion_date|naturaltime }}</td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td class="bg-light text-center font-italic" colspan="3">You haven't completed any capability yet.</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+  {% endif %}
+{% endblock %}

@@ -1,6 +1,6 @@
 import time
 from django.views.generic import CreateView, ListView, UpdateView, DetailView, DeleteView
-from ..models import CxSuperUser, User, Capability, Question, Answer
+from ..models import CxSuperUser, User, Capability, Question, Answer, CompletedCapability
 from ..forms import CxSuperUserSignUpForm, QuestionForm, BaseAnswerInlineFormSet
 # ans_maturity_sel
 # , BaseAnswerInlineFormSet
@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from ..decorators import clientuser_required, cxsuperuser_required
 from django.contrib.auth import login
 from django.shortcuts import redirect, render, get_object_or_404
-from django.db.models import Count, Avg, Sum
+from django.db.models import Count, Avg, Sum, Max
 from django.contrib import messages
 from django.urls import reverse, reverse_lazy
 from django import forms
@@ -90,6 +90,21 @@ class UpdateCapabilityView(UpdateView):
         return reverse('cxsuperuser:cx_su_update_capability', kwargs={'pk': self.object.pk})
 
 @method_decorator([login_required, cxsuperuser_required], name='dispatch')
+class AllResults(ListView):
+    model = CompletedCapability
+    context_object_name = 'completed_capabilities'
+    template_name = 'cxsuperuser/cx_su_view_completed.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(AllResults, self).get_context_data(**kwargs)
+        context['completedCap'] = CompletedCapability.objects.values('clientuser__user__username','capability__name').annotate(total=Sum('score'), qcount=Count('question'), completion_date=Max('date'))
+        context['totQ'] = Capability.objects.values('name').annotate(qcount=Count('questions'))
+        return context
+
+    def get_queryset(self):
+        return 0
+
+@method_decorator([login_required, cxsuperuser_required], name='dispatch')
 class CompletedCapabilityView(DetailView):
     model = Capability
     context_object_name = 'capability'
@@ -98,12 +113,14 @@ class CompletedCapabilityView(DetailView):
     def get_context_data(self, **kwargs):
         capability = self.get_object()
         completed_capabilities = capability.completed_capabilities.select_related('clientuser__user').order_by('-date')
-        total_completed_capabilities = completed_capabilities.count()
-        capability_score = capability.completed_capabilities.aggregate(average_score=Avg('score'))
+        # total_completed_capabilities = completed_capabilities.count()
+        # tot_score = CompletedCapability.objects.values('clientuser__user__username','capability__name').annotate(total=Sum('score'), qcount=Count('question'))
+        # totQ = Capability.objects.values('name').annotate(qcount=Count('questions'))
         extra_context = {
             'completed_capabilities': completed_capabilities,
-            'total_completed_capabilities': total_completed_capabilities,
-            'capability_score': capability_score
+            # 'total_completed_capabilities': total_completed_capabilities,
+            # 'tot_score': tot_score,
+            # 'totQ': totQ
         }
         kwargs.update(extra_context)
         return super().get_context_data(**kwargs)

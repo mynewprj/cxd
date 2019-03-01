@@ -5,7 +5,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.shortcuts import redirect, render
-from django.db.models import Count
+from django.db.models import Count, Sum, Max
 from django.forms import modelformset_factory
 from django.contrib import messages
 from django.db import transaction
@@ -89,13 +89,28 @@ class CompletedCapabilitylistView(ListView):
     context_object_name = 'completed_capabilities'
     template_name = 'clientuser/completed_capability_list.html'
 
+    # def get_queryset(self):
+    #     queryset = self.request.user.clientuser.completed_capabilities \
+    #         .select_related('capability') \
+    #         .order_by('capability__name')
+    #     return queryset
+
+    # def get_queryset(self):
+    #     queryset = self.request.user.clientuser.completed_capabilities \
+    #         .values('capability__name') \
+    #         .annotate(total=Sum('score'), qcount=Count('question'))
+    #     return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super(CompletedCapabilitylistView, self).get_context_data(**kwargs)
+        context['completedCap'] = self.request.user.clientuser.completed_capabilities \
+            .values('capability__name') \
+            .annotate(total=Sum('score'), qcount=Count('question'), completion_date=Max('date'))
+        context['totQ'] = Capability.objects.values('name').annotate(qcount=Count('questions'))
+        return context
+
     def get_queryset(self):
-        queryset = self.request.user.clientuser.completed_capabilities \
-            .select_related('capability') \
-            .order_by('capability__name')
-        return queryset
-
-
+        return 0
 # @method_decorator([login_required, clientuser_required], name='dispatch')
 # class DownloadPDF(PdfMixin, DetailView):
 #     template_name = 'clientuser/download_pdf.html'
@@ -170,19 +185,19 @@ def write_pdf_view(request, pk):
 #         return queryset
 
 
-@login_required
-@clientuser_required
-def new_product(request):
-    if request.method == 'POST':
-        form = StartAllCapabilitiesForm(request.user, request.POST)
-        if form.is_valid():
-            product = form.save(commit=False)
-            product.user = request.user
-            product.save()
-            return redirect('clientuser:capability_list')
-    else:
-        form = StartAllCapabilitiesForm(request.user)
-    return render(request, 'clientuser/completed_capability_form.html', {'form': form})
+# @login_required
+# @clientuser_required
+# def new_product(request):
+#     if request.method == 'POST':
+#         form = StartAllCapabilitiesForm(request.user, request.POST)
+#         if form.is_valid():
+#             product = form.save(commit=False)
+#             product.user = request.user
+#             product.save()
+#             return redirect('clientuser:capability_list')
+#     else:
+#         form = StartAllCapabilitiesForm(request.user)
+#     return render(request, 'clientuser/completed_capability_form.html', {'form': form})
 
 # @login_required
 # @clientuser_required

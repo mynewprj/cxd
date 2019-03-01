@@ -5,7 +5,7 @@
   <form method="post" id="ClientUserSignUpForm" data-operatinggroups-url="{% url 'ajax_load_operatinggroups' %}" data-industrygroups-url="{% url 'ajax_load_industrygroups' %}" data-deliverygroups-url="{% url 'ajax_load_deliverygroups' %}" data-accounts-url="{% url 'ajax_load_accounts' %}" data-deliveryunits-url="{% url 'ajax_load_deliveryunits' %}" data-projects-url="{% url 'ajax_load_projects' %}" novalidate>
     {% csrf_token %}
     <table>
-      {{ form.as_table }}
+      {{ form }}
     </table>
     <button type="submit" class="btn btn-success">Sign up</button>
   </form>

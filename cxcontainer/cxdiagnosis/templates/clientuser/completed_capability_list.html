@@ -8,25 +8,35 @@
   {% else %}
     {% include 'clientuser/_header.html' with active='completed' %}
     <div class="text-right">
-      <a href="{% url 'clientuser:download_pdf' user.pk %}">Download PDF</a>
+      <a href="{% url 'clientuser:download_pdf' user.pk %}"> Download PDF</a>
     </div>
     <div class="card">
       <table class="table mb-0">
         <thead>
           <tr>
             <th>Capability Area</th>
-            <th>Capability</th>
-            <th>Maturity Level</th>
-            <th>Date</th>
+            <th>Overall Maturity Level</th>
+            <th>Completion Date & Time</th>
           </tr>
         </thead>
         <tbody>
-          {% for completed_capability in completed_capabilities %}
+          {% for completed_capability in completedCap %}
             <tr>
-              <td>{{ completed_capability.capability.name }}</td>
-              <td>{{ completed_capability.question.text }}</td>
-              <td>{{ completed_capability.score }}</td>
-              <td>{{ completed_capability.date|naturaltime }}</td>
+              {% for capQ in totQ %}
+                {% if capQ.name == completed_capability.capability__name and capQ.qcount == completed_capability.qcount %}
+                  <td>{{ completed_capability.capability__name }}</td>
+                  {% if completed_capability.total < 1 %}
+                    <td>Not started</td>
+                  {% elif completed_capability.total < 6 %}
+                    <td>Basic</td>
+                  {% elif completed_capability.total < 11 %}
+                    <td>Medium</td>
+                  {% elif completed_capability.total < 16 %}
+                    <td>Pro</td>
+                  {% endif %}
+                  <td>{{ completed_capability.completion_date|naturaltime }}</td>
+                {% endif %}
+              {% endfor %}
             </tr>
           {% empty %}
             <tr>
